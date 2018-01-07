@@ -3,13 +3,10 @@ package com.example.cristian.moneycontrol;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import java.util.Map;
 
 
 /**
@@ -20,7 +17,7 @@ import java.util.Map;
  * Use the {@link TodayFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TodayFragment extends Fragment {
+public class TodayFragment extends Fragment implements TodayDetailsFragment.OnFragmentInteractionListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -61,17 +58,6 @@ public class TodayFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        Calendar calendar = new Calendar();
-        Map date = calendar.getDateTime();
-
-        TextView today_number = (TextView) getView().findViewById(R.id.today_number);
-        TextView today_letter = (TextView) getView().findViewById(R.id.today_letter);
-        TextView today_month_year = (TextView) getView().findViewById(R.id.today_month_year);
-
-        today_number.setText((String) date.get("day_number"));
-        today_letter.setText((String) date.get("day_letter"));
-        today_month_year.setText((String) date.get("month_year"));
     }
 
     @Override
@@ -103,6 +89,11 @@ public class TodayFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     /**
