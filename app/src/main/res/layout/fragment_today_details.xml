@@ -4,6 +4,8 @@
     android:id="@+id/layout_today_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:maxHeight="90dp"
+    android:minHeight="90dp"
     tools:context="com.example.cristian.moneycontrol.TodayDetailsFragment">
 
     <TextView
