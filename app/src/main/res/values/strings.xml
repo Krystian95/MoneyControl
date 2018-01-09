@@ -1,13 +1,22 @@
 <resources>
     <string name="app_name">MoneyControl</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_home">Home</string>
+    <string name="title_home" translatable="false">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_notifications" translatable="false">Notifications</string>
     <string name="app_name_tiny">Money Control</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_today">Oggi</string>
     <string name="navigation_balance">Bilancio</string>
+    <string name="example_day_number">13</string>
+    <string name="example_day_letter">martedì</string>
+    <string name="example_month_year">Gennaio 2018</string>
+    <string name="addnewexpense">AddNewExpense</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_add_new_expense">AddNewExpenseActivity</string>
+    <string name="undo">Annulla</string>
 </resources>

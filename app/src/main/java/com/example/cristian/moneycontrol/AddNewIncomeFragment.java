@@ -1,29 +1,23 @@
 package com.example.cristian.moneycontrol;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import java.util.Map;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TodayDetailsFragment.OnFragmentInteractionListener} interface
+ * {@link AddNewIncomeFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TodayDetailsFragment#newInstance} factory method to
+ * Use the {@link AddNewIncomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TodayDetailsFragment extends Fragment {
+public class AddNewIncomeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -35,7 +29,7 @@ public class TodayDetailsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public TodayDetailsFragment() {
+    public AddNewIncomeFragment() {
         // Required empty public constructor
     }
 
@@ -45,11 +39,11 @@ public class TodayDetailsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment TodayDetailsFragment.
+     * @return A new instance of fragment AddNewIncomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TodayDetailsFragment newInstance(String param1, String param2) {
-        TodayDetailsFragment fragment = new TodayDetailsFragment();
+    public static AddNewIncomeFragment newInstance(String param1, String param2) {
+        AddNewIncomeFragment fragment = new AddNewIncomeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -69,37 +63,8 @@ public class TodayDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_today_details, container, false);
-
-        /* Add New Expense button */
-        ImageView newExpenseImage = view.findViewById(R.id.add_new_expense);
-        newExpenseImage.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                Intent addNewExpenseIntent = new Intent(v.getContext(), AddNewEntryActivity.class);
-                startActivity(addNewExpenseIntent);
-
-                return true;
-            }
-        });
-
-        /* Today date informations */
-
-        Calendar calendar = new Calendar();
-        Map date = calendar.getDateTime();
-
-        TextView today_number = (TextView) view.findViewById(R.id.today_number);
-        TextView today_letter = (TextView) view.findViewById(R.id.today_letter);
-        TextView today_month_year = (TextView) view.findViewById(R.id.today_month_year);
-
-        today_number.setText((String) date.get("day_number"));
-        today_letter.setText((String) date.get("day_letter"));
-        today_month_year.setText((String) date.get("month_year"));
-
-        return view;
-
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_add_new_income, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

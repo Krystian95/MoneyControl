@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="13"
+        android:text="@string/example_day_number"
         android:textAlignment="textEnd"
         android:textAllCaps="false"
         android:textColor="@android:color/black"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="21dp"
-        android:text="martedì"
+        android:text="@string/example_day_letter"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/today_number"
@@ -38,10 +38,21 @@
         android:layout_width="135dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:text="Gennaio 2018"
+        android:text="@string/example_month_year"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/today_number"
         app:layout_constraintTop_toBottomOf="@+id/today_letter" />
+
+    <ImageView
+        android:id="@+id/add_new_expense"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="14dp"
+        android:contentDescription="@string/addnewexpense"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_add_circle_outline_black_24dp" />
 
 </android.support.constraint.ConstraintLayout>
