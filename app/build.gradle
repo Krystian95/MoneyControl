@@ -43,6 +43,4 @@ dependencies {
     compile "com.android.support:animated-vector-drawable:${supportLibVersion}"
     // AnimatedVectorDrawableCompat
     compile "com.android.support:transition:${supportLibVersion}"
-
-
 }

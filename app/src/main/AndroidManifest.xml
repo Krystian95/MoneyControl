@@ -22,7 +22,8 @@
         <activity
             android:name=".AddNewEntryActivity"
             android:label="@string/title_activity_add_new_expense"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AddNewEntryDetailsActivity"></activity>
     </application>
 
 </manifest>

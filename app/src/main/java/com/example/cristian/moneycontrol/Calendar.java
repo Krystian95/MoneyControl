@@ -27,7 +27,6 @@ public class Calendar {
         String text = dateFormatMonthYear.format(todayDate);
         text = String.valueOf(text.charAt(0)).toUpperCase() + text.subSequence(1, text.length());
 
-
         date.put("month_year", text);
 
         return date;

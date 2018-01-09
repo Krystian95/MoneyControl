@@ -19,4 +19,7 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_add_new_expense">AddNewExpenseActivity</string>
     <string name="undo">Annulla</string>
+    <string name="paid">Pagata</string>
+    <string name="EUR">€</string>
+    <string name="sample_category">Divertimento</string>
 </resources>
