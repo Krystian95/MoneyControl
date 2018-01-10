@@ -22,4 +22,11 @@
     <string name="paid">Pagata</string>
     <string name="EUR">€</string>
     <string name="sample_category">Divertimento</string>
+    <string name="place_autocomplete_hint">Luogo</string>
+    <string name="example_date">05/01/2018</string>
+    <string name="example_time">15:30</string>
+    <string name="future_expense">Prevista</string>
+    <string name="overdue_expense">Scaduta</string>
+    <string name="paid_expense">Pagata</string>
+    <string name="expense_new_title">Nuova</string>
 </resources>

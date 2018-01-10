@@ -1,20 +1,29 @@
 package com.example.cristian.moneycontrol;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
+import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
+import com.seatgeek.placesautocomplete.model.Place;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,13 +39,15 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         EditText input_number = findViewById(R.id.amount);
+        TextView checkbox_paid_label = findViewById(R.id.checkbox_paid_label);
+        PlacesAutocompleteTextView address = findViewById(R.id.places_autocomplete);
         final CheckBox checkbox_paid = (CheckBox) findViewById(R.id.checkbox_paid);
         final TextView date = (TextView) findViewById(R.id.date);
         final TextView time = (TextView) findViewById(R.id.time);
 
         Intent intent = getIntent();
 
-        /* title */
+        /* Title */
 
         String entry_type = "";
 
@@ -46,9 +57,55 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
             }
         }
 
-        setTitle("Nuova " + entry_type);
+        setTitle(getString(R.string.expense_new_title) + entry_type);
 
-        /* checkbox */
+        /* Keyboard show for input number */
+
+        input_number.requestFocus();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+        input_number.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
+                return false;
+            }
+        });
+
+
+        /* Address */
+
+        address.setOnPlaceSelectedListener(
+                new OnPlaceSelectedListener() {
+                    @Override
+                    public void onPlaceSelected(final Place place) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    }
+                }
+        );
+
+        /* TextView descrizione stato new entry (Pagata, Prevista, Scaduta */
+
+        checkbox_paid_label.setOnTouchListener(new View.OnTouchListener() {
+
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (checkbox_paid.isChecked()) {
+                        checkbox_paid.setChecked(false);
+                    } else {
+                        checkbox_paid.setChecked(true);
+                    }
+                }
+                return false;
+            }
+        });
+
+        /* Checkbox */
 
         checkbox_paid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                                      @Override
@@ -56,15 +113,15 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
 
                                                          TextView checkbox_paid_label = findViewById(R.id.checkbox_paid_label);
                                                          if (isChecked) {
-                                                             checkbox_paid_label.setText("Pagata");
+                                                             checkbox_paid_label.setText(R.string.paid_expense);
                                                          } else {
                                                              String dateTemp = (String) date.getText();
                                                              String timeTemp = (String) time.getText();
 
                                                              if (dateIsInTheFuture(dateTemp, timeTemp)) {
-                                                                 checkbox_paid_label.setText("Prevista");
+                                                                 checkbox_paid_label.setText(R.string.future_expense);
                                                              } else {
-                                                                 checkbox_paid_label.setText("Scaduta");
+                                                                 checkbox_paid_label.setText(R.string.overdue_expense);
                                                              }
                                                          }
                                                      }
@@ -126,15 +183,14 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
                                 if (!checkbox_paid.isChecked()) {
                                     TextView checkbox_paid_label = findViewById(R.id.checkbox_paid_label);
                                     if (dateIsInTheFuture(dateTemp, timeTemp)) {
-                                        checkbox_paid_label.setText("Prevista");
+                                        checkbox_paid_label.setText(R.string.future_expense);
                                     } else {
-                                        checkbox_paid_label.setText("Scaduta");
+                                        checkbox_paid_label.setText(R.string.overdue_expense);
                                     }
                                 }
 
                             }
                         }, mYear, mMonth, mDay);
-                datePickerDialog.setTitle("Seleziona Data");
                 datePickerDialog.show();
             }
         });
@@ -176,14 +232,13 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
                         if (!checkbox_paid.isChecked()) {
                             TextView checkbox_paid_label = findViewById(R.id.checkbox_paid_label);
                             if (dateIsInTheFuture(dateTemp, timeTemp)) {
-                                checkbox_paid_label.setText("Prevista");
+                                checkbox_paid_label.setText(R.string.future_expense);
                             } else {
-                                checkbox_paid_label.setText("Scaduta");
+                                checkbox_paid_label.setText(R.string.overdue_expense);
                             }
                         }
                     }
                 }, hour, minute, true);
-                mTimePicker.setTitle("Seleziona Ora");
                 mTimePicker.show();
 
             }
@@ -205,8 +260,6 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
     }
 
     private boolean dateIsInTheFuture(String date, String time) {
-
-        Log.e("DATE-TIME", date + " " + time);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         Date strDate = null;
