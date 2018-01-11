@@ -29,4 +29,6 @@
     <string name="overdue_expense">Scaduta</string>
     <string name="paid_expense">Pagata</string>
     <string name="expense_new_title">Nuova</string>
+    <string name="AddNewEntryDetailsActivity">AddNewEntryDetailsActivity</string>
+    <string name="take_new_photo">Foto</string>
 </resources>
