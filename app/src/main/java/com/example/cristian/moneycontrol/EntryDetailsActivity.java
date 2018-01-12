@@ -3,8 +3,10 @@ package com.example.cristian.moneycontrol;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,6 +18,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -23,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -31,8 +35,10 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -48,25 +54,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
 
-public class AddNewEntryDetailsActivity extends AppCompatActivity {
+public class EntryDetailsActivity extends AppCompatActivity {
 
-    protected static final int REQUEST_TAKE_PHOTO = 0;
-    protected static final int PERMISSION_REQUEST_CAMERA = 1;
-    protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 2;
+    private static final int PERMISSION_REQUEST_CAMERA = 1;
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 2;
     private static final String PHOTO_NAME_SEPARATOR = "-";
 
-    ImageView mImageView;
-    String lastPhotoAbsolutePath;
+    private ArrayList<String> photos_indexed = new ArrayList<>();
+    private String lastPhotoAbsolutePath;
 
-    private View mLayout;
-    private Uri imageUri;
+    private View layout_main;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_entry_details);
+        setContentView(R.layout.activity_entry_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         EditText input_number = findViewById(R.id.amount);
@@ -76,7 +79,6 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
         final TextView date = (TextView) findViewById(R.id.date);
         final TextView time = (TextView) findViewById(R.id.time);
         final Button take_photo = (Button) findViewById(R.id.new_photo);
-        mImageView = findViewById(R.id.image_view_test);
 
         Intent intent = getIntent();
 
@@ -95,6 +97,8 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
         /* Keyboard show for input number */
 
         input_number.requestFocus();
+
+        //TODO do it only if it's new entry
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         input_number.setOnKeyListener(new View.OnKeyListener() {
@@ -136,7 +140,7 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
                 int mMonth = c.get(Calendar.MONTH);
                 int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(AddNewEntryDetailsActivity.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(EntryDetailsActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
 
                             @Override
@@ -188,7 +192,7 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
                 TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(AddNewEntryDetailsActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                mTimePicker = new TimePickerDialog(EntryDetailsActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
 
@@ -286,16 +290,13 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
 
         /* photo */
 
-        mLayout = findViewById(R.id.layout_add_new_entry_details);
+        layout_main = findViewById(R.id.layout_add_new_entry_details);
 
         setupExistingPhotos();
 
         take_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("PHOTO BUTTON", "CLICKED");
-                //dispatchTakePictureIntent();
-                //createThumbsList();
                 startCameraAction();
             }
         });
@@ -323,14 +324,10 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
         if (requestCode == PERMISSION_REQUEST_CAMERA) {
             // Request for camera permission.
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission has been granted. Start camera preview Activity.
-                Snackbar.make(mLayout, "Camera permission was granted. Starting preview.",
-                        Snackbar.LENGTH_SHORT)
-                        .show();
                 startCamera();
             } else {
                 // Permission request was denied.
-                Snackbar.make(mLayout, "Camera permission request was denied.",
+                Snackbar.make(layout_main, R.string.permissions_camera_denied,
                         Snackbar.LENGTH_SHORT)
                         .show();
             }
@@ -342,16 +339,10 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
      */
     private void startCameraAction() {
 
-        // Check if the Camera permission has been granted
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
-            // Permission is already available, start camera preview
-            Snackbar.make(mLayout,
-                    "Camera permission is available. Starting preview.",
-                    Snackbar.LENGTH_SHORT).show();
             startCamera();
         } else {
-            // Permission is missing and must be requested.
             requestCameraPermission();
         }
     }
@@ -387,7 +378,7 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
     }
 
     /*
-    Count the occurences of a Char in a String
+    Count the occurrences of a Char in a String
      */
     public static int count(String s, char c) {
         return s.length() == 0 ? 0 : (s.charAt(0) == c ? 1 : 0) + count(s.substring(1), c);
@@ -397,27 +388,22 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
     Request the camera permission
      */
     private void requestCameraPermission() {
-        // Permission has not been granted and must be requested.
+
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.CAMERA)) {
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // Display a SnackBar with a button to request the missing permission.
-            Snackbar.make(mLayout, "Camera access is required to display the camera preview.",
-                    Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+
+            Snackbar.make(layout_main, R.string.permission_camera_required,
+                    Snackbar.LENGTH_INDEFINITE).setAction(R.string.Ok, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Request the permission
-                    ActivityCompat.requestPermissions(AddNewEntryDetailsActivity.this,
+
+                    ActivityCompat.requestPermissions(EntryDetailsActivity.this,
                             new String[]{Manifest.permission.CAMERA},
                             PERMISSION_REQUEST_CAMERA);
                 }
             }).show();
 
         } else {
-            Snackbar.make(mLayout,
-                    "Permission is not available. Requesting camera permission.",
-                    Snackbar.LENGTH_SHORT).show();
             // Request the permission. The result will be received in onRequestPermissionResult().
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
                     PERMISSION_REQUEST_CAMERA);
@@ -430,22 +416,22 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
     private void startCamera() {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
+
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
+
             File photoFile = null;
             try {
                 photoFile = createImageFile();
+
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            "com.example.android.fileprovider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                }
             } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
             }
         }
     }
@@ -454,7 +440,7 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
     Create the file image where to put the taken photo
      */
     private File createImageFile() throws IOException {
-        // Create an image file name
+
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
         int entry_id = 65;
@@ -468,7 +454,6 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
                 storageDir
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
         lastPhotoAbsolutePath = image.getAbsolutePath();
         return image;
     }
@@ -485,10 +470,16 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
                 File photo = new File(lastPhotoAbsolutePath);
                 addThumb(photo, linearLayout);
 
-                Toast.makeText(this, "Picture was taken", Toast.LENGTH_SHORT);
+                Toast.makeText(this, R.string.picture_taken, Toast.LENGTH_SHORT);
 
             } else {
-                Toast.makeText(this, "Picture was not taken", Toast.LENGTH_LONG);
+                Toast.makeText(this, R.string.picture_taken_failure, Toast.LENGTH_LONG);
+            }
+        } else {
+            if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+                deleteFileCustom(lastPhotoAbsolutePath);
+
             }
         }
     }
@@ -522,11 +513,15 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
     }
 
     /*
-    Add a single thumb to the tumbs list
+    Add a single thumb to the thumbs list
      */
-    private void addThumb(File photo, LinearLayout linearLayout){
+    private void addThumb(File photo, LinearLayout linearLayout) {
 
-        Bitmap myBitmap = BitmapFactory.decodeFile(photo.getAbsolutePath());
+        photos_indexed.add(photo.getAbsolutePath());
+
+        final String absolute_path = photo.getAbsolutePath();
+
+        Bitmap myBitmap = BitmapFactory.decodeFile(absolute_path);
 
         FrameLayout frameLayout = new FrameLayout(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, getPixelsToDP(90));
@@ -534,29 +529,164 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
         frameLayout.setLayoutParams(layoutParams);
 
         final ImageView imgView = new ImageView(this);
-        LinearLayout.LayoutParams lpImage = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        imgView.setImageBitmap(myBitmap);
-        //imgView.setImageResource(R.drawable.ic_account_balance_black_24dp);
-        imgView.setLayoutParams(new android.view.ViewGroup.LayoutParams(250, 250));
-        imgView.setMaxHeight(200);
-        imgView.setMaxWidth(200);
 
-        //TODO replace random id
-        Random r = new Random();
-        int id = r.nextInt(999) + 1;
-        imgView.setId(id);
+        // Dimensions of the View
+        int viewHeight = 200;
+        int viewWidth = 200;
+
+        imgView.setMaxHeight(viewHeight);
+        imgView.setMaxWidth(viewWidth);
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(photo.getAbsolutePath(), bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW / viewWidth, photoH / viewHeight);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        imgView.setImageBitmap(myBitmap);
+        imgView.setLayoutParams(new android.view.ViewGroup.LayoutParams(250, 250));
 
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO replace with image opening
-                Log.e("TOUCHED", "Image# " + v.getId());
+                ImageView imageView = (ImageView) v;
+                loadPhoto(imageView);
             }
         });
 
         frameLayout.addView(imgView);
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT, 1);
+        lp.addRule(RelativeLayout.ALIGN_BASELINE, 1);
+        lp.setMargins(150, 220, 0, 0);
+
+        ImageButton imageButton = new ImageButton(this);
+        imageButton.setLayoutParams(lp);
+        imageButton.setImageResource(R.drawable.ic_delete_black_24dp);
+        imageButton.setColorFilter(this.getResources().getColor(R.color.red));
+        imageButton.setAlpha(0.8f);
+        imageButton.setBackground(null);
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deletePhotoAlert(v.getContext(), absolute_path);
+            }
+        });
+
+        frameLayout.addView(imageButton);
+
         linearLayout.addView(frameLayout);
+    }
+
+    /*
+    Remove a specific index from the thumbs' layout
+     */
+    private void removeThumb(int index) {
+
+        LinearLayout linearLayout = findViewById(R.id.thumb_container);
+        linearLayout.removeViewAt(index);
+    }
+
+    /*
+    Show the alert before image delete
+     */
+    private void deletePhotoAlert(final Context context, final String photo_path) {
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setMessage(R.string.alert_delete_photo);
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                R.string.Yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                        if (!deleteFileCustom(photo_path)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setMessage(R.string.delete_file_failure)
+                                    .setCancelable(false)
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        } else {
+
+                            /* remove the thumb from the thumbs list and from the indexed photos */
+
+                            int indexToRemove = photos_indexed.indexOf(photo_path);
+
+                            removeThumb(indexToRemove);
+                            photos_indexed.remove(indexToRemove);
+
+                            Toast.makeText(context, R.string.photo_deleted, Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
+        builder1.setNegativeButton(
+                R.string.No,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
+    /*
+    Delete a specific file, input given its full absolute path
+     */
+    private boolean deleteFileCustom(String photo_path) {
+
+        File file = new File(photo_path);
+        if (file.exists()) {
+            file.delete();
+            return true;
+        }
+
+        return false;
+    }
+
+    /*
+    Show a popup dialog with the full image shown
+     */
+    private void loadPhoto(ImageView imageView) {
+
+        ImageView tempImageView = imageView;
+
+        final Dialog dialog = new Dialog(this) {
+            @Override
+            public boolean onTouchEvent(MotionEvent event) {
+                this.dismiss();
+                return true;
+            }
+        };
+
+        dialog.setCancelable(true);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_fullimage_dialog);
+        ImageView image = (ImageView) dialog.findViewById(R.id.fullimage);
+        image.setImageDrawable(tempImageView.getDrawable());
+        dialog.show();
+        dialog.setCanceledOnTouchOutside(true);
     }
 
     /*
@@ -593,38 +723,6 @@ public class AddNewEntryDetailsActivity extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
-    }
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(lastPhotoAbsolutePath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }
-
-    private void setPic() {
-        // Get the dimensions of the View
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(lastPhotoAbsolutePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(lastPhotoAbsolutePath, bmOptions);
-        mImageView.setImageBitmap(bitmap);
     }
 
 }

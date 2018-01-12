@@ -6,7 +6,6 @@
     <string name="title_notifications" translatable="false">Notifications</string>
     <string name="app_name_tiny">Money Control</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_today">Oggi</string>
     <string name="navigation_balance">Bilancio</string>
@@ -31,4 +30,16 @@
     <string name="expense_new_title">Nuova</string>
     <string name="AddNewEntryDetailsActivity">AddNewEntryDetailsActivity</string>
     <string name="take_new_photo">Foto</string>
+    <string name="delete">Elimina</string>
+    <string name="full_image_preview">Anteprima Immagine Full Screen</string>
+    <string name="alert_delete_photo">Sei sicuro di voler eliminare questa foto?</string>
+    <string name="No">No</string>
+    <string name="Yes">Si</string>
+    <string name="delete_file_failure">Ops... qualcosa è andato storto. La foto non è stata eliminata.</string>
+    <string name="Ok">Ok</string>
+    <string name="permission_camera_required">L\'applicazione ha bisogno dell\'accesso alla fotocamera.</string>
+    <string name="permissions_camera_denied">Hai negato l\'accesso alla fotocamera.</string>
+    <string name="picture_taken">Foto salvata correttamente</string>
+    <string name="picture_taken_failure">Ops... La Foto non è stata salvata!</string>
+    <string name="photo_deleted">Foto eliminata</string>
 </resources>
