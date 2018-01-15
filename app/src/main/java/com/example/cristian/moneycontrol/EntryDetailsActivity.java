@@ -17,9 +17,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -39,13 +41,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.codetroopers.betterpickers.OnDialogDismissListener;
+import com.codetroopers.betterpickers.recurrencepicker.RecurrencePickerDialogFragment;
 import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import com.seatgeek.placesautocomplete.model.Place;
+
+import org.dmfs.rfc5545.DateTime;
+import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
+import org.dmfs.rfc5545.recur.RecurrenceRule;
+import org.dmfs.rfc5545.recur.RecurrenceRuleIterator;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,8 +64,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
-public class EntryDetailsActivity extends AppCompatActivity {
+public class EntryDetailsActivity extends AppCompatActivity implements RecurrencePickerDialogFragment.OnRecurrenceSetListener {
 
     private static final int PERMISSION_REQUEST_CAMERA = 1;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 2;
@@ -65,6 +76,14 @@ public class EntryDetailsActivity extends AppCompatActivity {
     private String lastPhotoAbsolutePath;
 
     private View layout_main;
+    private TextView date;
+    private TextView time;
+    private Switch switch_repeat;
+
+    private static final String FRAG_TAG_RECUR_PICKER = "recurrencePickerDialogFragment";
+
+    //TODO set as stored into db
+    private String mRrule = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +93,11 @@ public class EntryDetailsActivity extends AppCompatActivity {
 
         EditText input_number = findViewById(R.id.amount);
         TextView checkbox_paid_label = findViewById(R.id.checkbox_paid_label);
-        final PlacesAutocompleteTextView address = findViewById(R.id.places_autocomplete);
+        final PlacesAutocompleteTextView address = findViewById(R.id.address);
         final CheckBox checkbox_paid = (CheckBox) findViewById(R.id.checkbox_paid);
-        final TextView date = (TextView) findViewById(R.id.date);
-        final TextView time = (TextView) findViewById(R.id.time);
+        date = (TextView) findViewById(R.id.date);
+        time = (TextView) findViewById(R.id.time);
+        switch_repeat = (Switch) findViewById(R.id.switch_repeat);
         final Button take_photo = (Button) findViewById(R.id.new_photo);
 
         Intent intent = getIntent();
@@ -97,8 +117,6 @@ public class EntryDetailsActivity extends AppCompatActivity {
         /* Keyboard show for input number */
 
         input_number.requestFocus();
-
-        //TODO do it only if it's new entry
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         input_number.setOnKeyListener(new View.OnKeyListener() {
@@ -183,7 +201,19 @@ public class EntryDetailsActivity extends AppCompatActivity {
         Calendar mcurrentTime = Calendar.getInstance();
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
-        time.setText(hour + ":" + minute);
+
+        String selectedHourString = String.valueOf(hour);
+        String selectedMinuteString = String.valueOf(minute);
+
+        if (hour < 10) {
+            selectedHourString = "0" + hour;
+        }
+
+        if (minute < 10) {
+            selectedMinuteString = "0" + minute;
+        }
+
+        time.setText(selectedHourString + ":" + selectedMinuteString);
 
         time.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,6 +328,34 @@ public class EntryDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startCameraAction();
+            }
+        });
+
+        /* repeat */
+
+        switch_repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (switch_repeat.isChecked()) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    Bundle bundle = new Bundle();
+                    android.text.format.Time time = new android.text.format.Time();
+                    time.setToNow();
+                    bundle.putLong(RecurrencePickerDialogFragment.BUNDLE_START_TIME_MILLIS, time.toMillis(false));
+                    bundle.putString(RecurrencePickerDialogFragment.BUNDLE_TIME_ZONE, time.timezone);
+                    bundle.putString(RecurrencePickerDialogFragment.BUNDLE_RRULE, mRrule);
+                    bundle.putBoolean(RecurrencePickerDialogFragment.BUNDLE_HIDE_SWITCH_BUTTON, true);
+
+                    RecurrencePickerDialogFragment rpd = (RecurrencePickerDialogFragment) fm.findFragmentByTag(FRAG_TAG_RECUR_PICKER);
+                    if (rpd != null) {
+                        rpd.dismiss();
+                    }
+                    rpd = new RecurrencePickerDialogFragment();
+                    rpd.setArguments(bundle);
+                    rpd.setOnRecurrenceSetListener(EntryDetailsActivity.this);
+                    rpd.show(fm, FRAG_TAG_RECUR_PICKER);
+                }
             }
         });
     }
@@ -513,6 +571,23 @@ public class EntryDetailsActivity extends AppCompatActivity {
     }
 
     /*
+    Return date time in milliseconds
+     */
+    private long dateTimeToMillis(String date, String time) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        Date strDate = null;
+        try {
+            strDate = sdf.parse(date + " " + time);
+            return strDate.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    /*
     Add a single thumb to the thumbs list
      */
     private void addThumb(File photo, LinearLayout linearLayout) {
@@ -521,11 +596,12 @@ public class EntryDetailsActivity extends AppCompatActivity {
 
         final String absolute_path = photo.getAbsolutePath();
 
+        //TODO add to database
+
         Bitmap myBitmap = BitmapFactory.decodeFile(absolute_path);
 
         FrameLayout frameLayout = new FrameLayout(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, getPixelsToDP(90));
-        layoutParams.rightMargin = getPixelsToDP(10);
         frameLayout.setLayoutParams(layoutParams);
 
         final ImageView imgView = new ImageView(this);
@@ -553,7 +629,7 @@ public class EntryDetailsActivity extends AppCompatActivity {
         bmOptions.inPurgeable = true;
 
         imgView.setImageBitmap(myBitmap);
-        imgView.setLayoutParams(new android.view.ViewGroup.LayoutParams(250, 250));
+        imgView.setLayoutParams(new android.view.ViewGroup.LayoutParams(200, 250));
 
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -568,7 +644,7 @@ public class EntryDetailsActivity extends AppCompatActivity {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT, 1);
         lp.addRule(RelativeLayout.ALIGN_BASELINE, 1);
-        lp.setMargins(150, 220, 0, 0);
+        lp.setMargins(120, 220, 0, 0);
 
         ImageButton imageButton = new ImageButton(this);
         imageButton.setLayoutParams(lp);
@@ -659,6 +735,8 @@ public class EntryDetailsActivity extends AppCompatActivity {
         File file = new File(photo_path);
         if (file.exists()) {
             file.delete();
+
+            //TODO delete also from database
             return true;
         }
 
@@ -725,4 +803,38 @@ public class EntryDetailsActivity extends AppCompatActivity {
         return true;
     }
 
+    private String getDate(long time) {
+        Calendar cal = Calendar.getInstance(Locale.ITALY);
+        cal.setTimeInMillis(time);
+        String date = DateFormat.format("dd-MM-yyyy HH:mm", cal).toString();
+        return date;
+    }
+
+    @Override
+    public void onRecurrenceSet(String rrule) {
+
+        if (rrule != null) {
+            mRrule = rrule;
+        }
+
+        RecurrenceRule rule = null;
+        try {
+            rule = new RecurrenceRule(rrule);
+        } catch (InvalidRecurrenceRuleException e) {
+            e.printStackTrace();
+        }
+
+        //TODO replace with timestamp start event
+        long startMillis = dateTimeToMillis(date.getText().toString(), time.getText().toString());
+        DateTime start = new DateTime(startMillis);
+
+        RecurrenceRuleIterator it = rule.iterator(start);
+
+        int maxInstances = 100; // limit instances for rules that recur forever
+
+        while (it.hasNext() && (!rule.isInfinite() || maxInstances-- > 0)) {
+            DateTime nextInstance = it.nextDateTime();
+            Log.e("EVENT:", String.valueOf(getDate(nextInstance.getTimestamp())));
+        }
+    }
 }

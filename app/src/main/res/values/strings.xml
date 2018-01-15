@@ -28,7 +28,7 @@
     <string name="overdue_expense">Scaduta</string>
     <string name="paid_expense">Pagata</string>
     <string name="expense_new_title">Nuova</string>
-    <string name="AddNewEntryDetailsActivity">AddNewEntryDetailsActivity</string>
+    <string name="EntryDetailsActivity">EntryDetailsActivity</string>
     <string name="take_new_photo">Foto</string>
     <string name="delete">Elimina</string>
     <string name="full_image_preview">Anteprima Immagine Full Screen</string>
@@ -42,4 +42,8 @@
     <string name="picture_taken">Foto salvata correttamente</string>
     <string name="picture_taken_failure">Ops... La Foto non è stata salvata!</string>
     <string name="photo_deleted">Foto eliminata</string>
+    <string name="descrizione_hint">Descrizione</string>
+    <string name="repeat">Ripeti</string>
+    <string name="save">Salva</string>
+    <string name="example_category">Divertimento</string>
 </resources>

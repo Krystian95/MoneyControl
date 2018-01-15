@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.Toast;
 
 
 /**
@@ -28,6 +30,45 @@ public class AddNewExpenseFragment extends Fragment {
 
     private String mParam1;
     private String mParam2;
+
+    GridView grid;
+
+    String[] web = {
+            "Google",
+            "Github",
+            "Instagram",
+            "Facebook",
+            "Flickr",
+            "Pinterest",
+            "Quora",
+            "Twitter",
+            "Vimeo",
+            "WordPress",
+            "Youtube",
+            "Stumbleupon",
+            "SoundCloud",
+            "Reddit",
+            "Blogger"
+
+    };
+    int[] imageId = {
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+            R.drawable.ic_account_balance_black_24dp,
+
+    };
 
     private OnFragmentInteractionListener mListener;
 
@@ -68,14 +109,31 @@ public class AddNewExpenseFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_new_expense, container, false);
 
-        Button button = (Button) view.findViewById(R.id.button_go);
-        button.setOnClickListener(new View.OnClickListener() {
+        /*button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent addNewEntryDetailsIntent = new Intent(v.getContext(), EntryDetailsActivity.class);
                 addNewEntryDetailsIntent.putExtra("entry_type", "Spesa");
                 startActivity(addNewEntryDetailsIntent);
             }
+        });*/
+
+
+        CategoryGrid adapter = new CategoryGrid(view.getContext(), web, imageId);
+        grid = (GridView) view.findViewById(R.id.gridView1);
+        grid.setAdapter(adapter);
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Toast.makeText(AddNewExpenseFragment.this.getContext(), "You Clicked at " + web[+position], Toast.LENGTH_SHORT).show();
+                Intent addNewEntryDetailsIntent = new Intent(view.getContext(), EntryDetailsActivity.class);
+                addNewEntryDetailsIntent.putExtra("entry_type", "Spesa");
+                addNewEntryDetailsIntent.putExtra("category_name", web[+position]);
+                startActivity(addNewEntryDetailsIntent);
+            }
         });
+
 
         return view;
     }
