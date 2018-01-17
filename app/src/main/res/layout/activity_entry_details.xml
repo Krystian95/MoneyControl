@@ -148,7 +148,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/switch_repeat"
                     app:pacv_googleMapsApiKey="AIzaSyCvGhMl9ZJJJQILJtTprBs9AhA5tQsNod8" />
 
-                <com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
+                <EditText
                     android:id="@+id/description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -157,8 +157,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/address"
-                    app:pacv_googleMapsApiKey="AIzaSyCvGhMl9ZJJJQILJtTprBs9AhA5tQsNod8" />
+                    app:layout_constraintTop_toBottomOf="@+id/address" />
 
                 <Button
                     android:id="@+id/new_photo"

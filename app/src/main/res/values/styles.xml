@@ -3,6 +3,12 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@android:color/holo_orange_dark</item>
+        <item name="android:textColorHint">@color/light_gray</item>
+        <item name="android:textColorPrimaryInverse">@color/colorAccent</item>
+        <item name="android:textColorSecondaryInverse">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/colorAccent</item>
+        <item name="colorPrimary">@android:color/holo_orange_dark</item>
+        <item name="android:navigationBarColor">@color/radial_gray_light</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
