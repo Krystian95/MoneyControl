@@ -20,7 +20,8 @@ public class Entry {
 
     private String address;
 
-    private long dateTime;
+    //@TypeConverters(DateConverter.class)
+    private String dateTime;
 
     private String recurrenceRule;
 
@@ -64,11 +65,11 @@ public class Entry {
         this.address = address;
     }
 
-    public long getDateTime() {
+    public String getDateTime() {
         return this.dateTime;
     }
 
-    public void setDateTime(long date_time) {
+    public void setDateTime(String date_time) {
         this.dateTime = date_time;
     }
 
@@ -82,7 +83,7 @@ public class Entry {
 
     public String toString() {
 
-        return "Category{" +
+        return "Entry{" +
                 "\n\t\t\t idEntry: " + idEntry +
                 "\n\t\t\t idCategory: " + idCategory +
                 "\n\t\t\t amount: " + amount +

@@ -4,9 +4,8 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
-import android.util.Log;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Database(entities = {Entry.class, Category.class}, version = 1)
@@ -17,6 +16,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase INSTANCE;
 
     public abstract EntryDao entryDao();
+
     public abstract CategoryDao categoryDao();
 
     public static AppDatabase getAppDatabase(Context context) {
@@ -49,27 +49,26 @@ public abstract class AppDatabase extends RoomDatabase {
         return db.entryDao().getAll();
     }
 
-    public static void deleteAllCategories(final AppDatabase db){
+    public static Entry[] getTodayEntries(final AppDatabase db) {
+
+        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD");
+        Date myDate = new Date();
+        String today_string = format.format(myDate);
+        String from_date = today_string + " 00:00:00";
+        String to_date = today_string + " 23:59:59";
+
+        return db.entryDao().getEntriesByDateRange(from_date, to_date);
+    }
+
+    public static void deleteAllCategories(final AppDatabase db) {
         db.categoryDao().deleteAll();
     }
 
-    public static void deleteAllEntries(final AppDatabase db){
+    public static void deleteAllEntries(final AppDatabase db) {
         db.entryDao().deleteAll();
     }
 
     public static void populateWithTestDataEntry(AppDatabase db) {
 
-        Date currentTime = Calendar.getInstance().getTime();
-
-        Entry entry = new Entry();
-        entry.setAddress("Via Martiri di Villamarzana 6, Occhiobello, RO, 45030 Italy");
-        entry.setAmount((float) 50.12);
-        entry.setDateTime(currentTime.getTime());
-        entry.setDescription("Lore impus domini");
-
-        addEntry(db, entry);
-
-        Entry[] userList = db.entryDao().getAll();
-        Log.e("DATABASE", "Entries Count: " + userList.length);
     }
 }

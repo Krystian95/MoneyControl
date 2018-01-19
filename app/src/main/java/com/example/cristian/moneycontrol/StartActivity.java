@@ -3,6 +3,7 @@ package com.example.cristian.moneycontrol;
 import android.annotation.SuppressLint;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
+import android.net.ParseException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +16,8 @@ import com.example.cristian.moneycontrol.database.Category;
 import com.example.cristian.moneycontrol.database.Entry;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class StartActivity extends AppCompatActivity {
@@ -28,11 +31,11 @@ public class StartActivity extends AppCompatActivity {
         new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... params) {
-                Log.e("DATABASE", "ok3");
 
                 AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
 
-                AppDatabase.deleteAllCategories(db);
+                //AppDatabase.deleteAllEntries(db);
+                //AppDatabase.deleteAllCategories(db);
 
                 Category category = new Category();
                 category.setName("Giardinaggio");
@@ -46,20 +49,23 @@ public class StartActivity extends AppCompatActivity {
                     Log.e("DATABASE", category_temp.toString());
                 }
 
-                AppDatabase.deleteAllEntries(db);
-
                 Entry entry = new Entry();
                 entry.setAddress("Via Martiri di Villamarzana 6, Occhiobello, RO, 45030 Italy");
                 entry.setAmount((float) 50.12);
-                Date currentTime = java.util.Calendar.getInstance().getTime();
-                entry.setDateTime(currentTime.getTime());
+
+                SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
+                Date myDate = new Date();
+                String today_string = format.format(myDate);
+
+                entry.setDateTime(today_string);
+
                 entry.setDescription("Lore impus domini");
                 entry.setRecurrenceRule("rRule");
                 entry.setIdCategory(1);
 
                 AppDatabase.addEntry(db, entry);
 
-                Entry[] entries = AppDatabase.getAllEntries(db);
+                Entry[] entries = AppDatabase.getTodayEntries(db);
 
                 Log.e("DATABASE", "Entries Count: " + entries.length);
 

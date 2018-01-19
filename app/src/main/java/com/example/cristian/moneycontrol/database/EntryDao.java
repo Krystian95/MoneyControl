@@ -7,8 +7,6 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import org.dmfs.rfc5545.DateTime;
-
 @Dao
 public interface EntryDao {
 
@@ -20,6 +18,9 @@ public interface EntryDao {
 
     @Query("DELETE FROM entry")
     public void deleteAll();
+
+    @Query("SELECT * FROM entry WHERE dateTime >= Datetime(:from) AND dateTime <= Datetime(:to)")
+    public Entry[] getEntriesByDateRange(String from, String to);
 
     @Delete
     void delete(Entry entry);
