@@ -7,7 +7,7 @@
     tools:context="com.example.cristian.moneycontrol.AddNewExpenseFragment">
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/gridView1"
+        android:id="@+id/gridViewCategoryExpense"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:columnWidth="50dp"

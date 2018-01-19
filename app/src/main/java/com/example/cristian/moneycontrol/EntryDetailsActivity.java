@@ -46,8 +46,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.codetroopers.betterpickers.OnDialogDismissListener;
 import com.codetroopers.betterpickers.recurrencepicker.RecurrencePickerDialogFragment;
+import com.example.cristian.moneycontrol.database.AppDatabase;
+import com.example.cristian.moneycontrol.database.Category;
 import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import com.seatgeek.placesautocomplete.model.Place;
@@ -81,6 +82,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
     private Switch switch_repeat;
 
     private static final String FRAG_TAG_RECUR_PICKER = "recurrencePickerDialogFragment";
+    private boolean isNewEntry = false;
 
     //TODO set as stored into db
     private String mRrule = null;
@@ -93,6 +95,8 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
         EditText input_number = findViewById(R.id.amount);
         TextView checkbox_paid_label = findViewById(R.id.checkbox_paid_label);
+        TextView category_name = findViewById(R.id.category_name);
+        ImageView category_image = findViewById(R.id.category_image);
         final PlacesAutocompleteTextView address = findViewById(R.id.address);
         final CheckBox checkbox_paid = (CheckBox) findViewById(R.id.checkbox_paid);
         date = (TextView) findViewById(R.id.date);
@@ -110,9 +114,24 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             if (intent.hasExtra("entry_type")) {
                 entry_type = intent.getStringExtra("entry_type");
             }
+
+            if (intent.hasExtra("category_name")) {
+                AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+                Category category = AppDatabase.getCategoryByName(db, intent.getStringExtra("category_name"));
+                category_name.setText(category.getName());
+                category_image.setImageResource(category.getIcon());
+                isNewEntry = true;
+            } else {
+                isNewEntry = false;
+            }
         }
 
-        setTitle(getString(R.string.expense_new_title) + " " + entry_type);
+        if (isNewEntry) {
+            setTitle(getString(R.string.expense_new_title) + " " + entry_type);
+        } else {
+            setTitle(entry_type);
+            //TODO load current values
+        }
 
         /* Keyboard show for input number */
 

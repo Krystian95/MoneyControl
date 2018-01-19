@@ -6,12 +6,14 @@
     android:layout_height="match_parent"
     tools:context="com.example.cristian.moneycontrol.AddNewIncomeFragment">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add New INCOME"
-        android:textSize="30dp"
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gridViewCategoryIncome"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:columnWidth="50dp"
+        android:gravity="center"
+        android:numColumns="3"
+        android:stretchMode="columnWidth"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

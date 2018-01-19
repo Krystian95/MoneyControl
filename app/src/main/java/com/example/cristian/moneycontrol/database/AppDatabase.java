@@ -5,6 +5,8 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.example.cristian.moneycontrol.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -45,6 +47,18 @@ public abstract class AppDatabase extends RoomDatabase {
         return db.categoryDao().getAll();
     }
 
+    public static Category[] getExpenseCategories(final AppDatabase db) {
+        return db.categoryDao().getExpenseCategory();
+    }
+
+    public static Category[] getIncomeCategories(final AppDatabase db) {
+        return db.categoryDao().getIncomeCategory();
+    }
+
+    public static Category getCategoryByName(final AppDatabase db, String category_name) {
+        return db.categoryDao().getCategoryByName(category_name);
+    }
+
     public static Entry[] getAllEntries(final AppDatabase db) {
         return db.entryDao().getAll();
     }
@@ -68,7 +82,73 @@ public abstract class AppDatabase extends RoomDatabase {
         db.entryDao().deleteAll();
     }
 
-    public static void populateWithTestDataEntry(AppDatabase db) {
+    public static void setupDefaultCategories(AppDatabase db) {
+
+        String[] income_category_name = {
+                "Stipendio",
+                "Regali",
+                "Lavoro",
+                "Dividendi",
+                "Interessi",
+                "Altro"
+        };
+
+        int[] income_category_image = {
+                R.drawable.ic_attach_money_black_24dp,
+                R.drawable.ic_card_giftcard_black_24dp,
+                R.drawable.ic_work_black_24dp,
+                R.drawable.ic_alarm_add_black_24dp,
+                R.drawable.ic_account_balance_black_24dp,
+                R.drawable.ic_star_black_24dp,
+        };
+
+        Category category;
+
+        for (int i = 0; i < income_category_name.length; i++) {
+            category = new Category();
+            category.setIcon(income_category_image[i]);
+            category.setName(income_category_name[i]);
+            category.setType("income");
+            addCategory(db, category);
+        }
+
+        String[] expense_category_name = {
+                "Automobile",
+                "Casa",
+                "Pasti",
+                "Alimenti",
+                "Personale",
+                "Formazione",
+                "Divertimenti",
+                "Debito",
+                "Bollette",
+                "Assicurazione",
+                "Tasse",
+                "Varie"
+        };
+
+        int[] expense_category_image = {
+                R.drawable.ic_account_balance_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+                R.drawable.ic_dashboard_black_24dp,
+        };
+
+        for (int i = 0; i < expense_category_name.length; i++) {
+            category = new Category();
+            category.setIcon(expense_category_image[i]);
+            category.setName(expense_category_name[i]);
+            category.setType("expense");
+            addCategory(db, category);
+        }
 
     }
 }

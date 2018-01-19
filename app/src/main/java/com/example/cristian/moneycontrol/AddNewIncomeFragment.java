@@ -1,12 +1,18 @@
 package com.example.cristian.moneycontrol;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
+
+import com.example.cristian.moneycontrol.database.AppDatabase;
+import com.example.cristian.moneycontrol.database.Category;
 
 
 /**
@@ -26,6 +32,8 @@ public class AddNewIncomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    GridView grid;
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,7 +72,35 @@ public class AddNewIncomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_new_income, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_new_income, container, false);
+
+        AppDatabase db = AppDatabase.getAppDatabase(this.getContext());
+        Category[] categories = AppDatabase.getIncomeCategories(db);
+
+        final String[] category_name = new String[categories.length];
+        final int[] category_icon = new int[categories.length];
+
+        for (int i = 0; i < categories.length; i++) {
+            category_name[i] = categories[i].getName();
+            category_icon[i] = categories[i].getIcon();
+        }
+
+        CategoryGrid adapter = new CategoryGrid(view.getContext(), category_name, category_icon);
+        grid = (GridView) view.findViewById(R.id.gridViewCategoryIncome);
+        grid.setAdapter(adapter);
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Intent addNewEntryDetailsIntent = new Intent(view.getContext(), EntryDetailsActivity.class);
+                addNewEntryDetailsIntent.putExtra("entry_type", getString(R.string.Income));
+                addNewEntryDetailsIntent.putExtra("category_name", category_name[+position]);
+                startActivity(addNewEntryDetailsIntent);
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -11,7 +11,7 @@ public class Category {
 
     private String name;
 
-    private String icon;
+    private int icon;
 
     private String type;
 
@@ -31,11 +31,11 @@ public class Category {
         this.name = name;
     }
 
-    public String getIcon() {
+    public int getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
+    public void setIcon(int icon) {
         this.icon = icon;
     }
 

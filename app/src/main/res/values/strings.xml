@@ -46,4 +46,6 @@
     <string name="repeat">Ripeti</string>
     <string name="save">Salva</string>
     <string name="example_category">Divertimento</string>
+    <string name="Expense">Spesa</string>
+    <string name="Income">Entrata</string>
 </resources>

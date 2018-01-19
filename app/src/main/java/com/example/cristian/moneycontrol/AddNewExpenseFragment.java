@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
+
+import com.example.cristian.moneycontrol.database.AppDatabase;
+import com.example.cristian.moneycontrol.database.Category;
 
 
 /**
@@ -27,48 +29,10 @@ public class AddNewExpenseFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-
     private String mParam1;
     private String mParam2;
 
     GridView grid;
-
-    String[] web = {
-            "Google",
-            "Github",
-            "Instagram",
-            "Facebook",
-            "Flickr",
-            "Pinterest",
-            "Quora",
-            "Twitter",
-            "Vimeo",
-            "WordPress",
-            "Youtube",
-            "Stumbleupon",
-            "SoundCloud",
-            "Reddit",
-            "Blogger"
-
-    };
-    int[] imageId = {
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-            R.drawable.ic_account_balance_black_24dp,
-
-    };
 
     private OnFragmentInteractionListener mListener;
 
@@ -109,35 +73,34 @@ public class AddNewExpenseFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_new_expense, container, false);
 
-        /*button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent addNewEntryDetailsIntent = new Intent(v.getContext(), EntryDetailsActivity.class);
-                addNewEntryDetailsIntent.putExtra("entry_type", "Spesa");
-                startActivity(addNewEntryDetailsIntent);
-            }
-        });*/
+        AppDatabase db = AppDatabase.getAppDatabase(this.getContext());
+        Category[] categories = AppDatabase.getExpenseCategories(db);
 
+        final String[] category_name = new String[categories.length];
+        final int[] category_icon = new int[categories.length];
 
-        CategoryGrid adapter = new CategoryGrid(view.getContext(), web, imageId);
-        grid = (GridView) view.findViewById(R.id.gridView1);
+        for (int i = 0; i < categories.length; i++) {
+            category_name[i] = categories[i].getName();
+            category_icon[i] = categories[i].getIcon();
+        }
+
+        CategoryGrid adapter = new CategoryGrid(view.getContext(), category_name, category_icon);
+        grid = (GridView) view.findViewById(R.id.gridViewCategoryExpense);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(AddNewExpenseFragment.this.getContext(), "You Clicked at " + web[+position], Toast.LENGTH_SHORT).show();
                 Intent addNewEntryDetailsIntent = new Intent(view.getContext(), EntryDetailsActivity.class);
-                addNewEntryDetailsIntent.putExtra("entry_type", "Spesa");
-                addNewEntryDetailsIntent.putExtra("category_name", web[+position]);
+                addNewEntryDetailsIntent.putExtra("entry_type", getString(R.string.Expense));
+                addNewEntryDetailsIntent.putExtra("category_name", category_name[+position]);
                 startActivity(addNewEntryDetailsIntent);
             }
         });
 
-
         return view;
     }
-
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

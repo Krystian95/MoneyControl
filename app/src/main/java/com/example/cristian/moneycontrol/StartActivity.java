@@ -1,24 +1,17 @@
 package com.example.cristian.moneycontrol;
 
 import android.annotation.SuppressLint;
-import android.arch.persistence.room.Room;
 import android.content.Intent;
-import android.net.ParseException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.cristian.moneycontrol.database.AppDatabase;
 import com.example.cristian.moneycontrol.database.Category;
-import com.example.cristian.moneycontrol.database.Entry;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -37,7 +30,7 @@ public class StartActivity extends AppCompatActivity {
                 //AppDatabase.deleteAllEntries(db);
                 //AppDatabase.deleteAllCategories(db);
 
-                Category category = new Category();
+                /*Category category = new Category();
                 category.setName("Giardinaggio");
                 AppDatabase.addCategory(db, category);
 
@@ -71,17 +64,30 @@ public class StartActivity extends AppCompatActivity {
 
                 for (Entry entry_temp : entries) {
                     Log.e("DATABASE", entry_temp.toString());
+                }*/
+
+                Category[] categories = AppDatabase.getAllCategories(db);
+
+                if (categories.length == 0) {
+                    AppDatabase.setupDefaultCategories(db);
                 }
+
+                /*categories = AppDatabase.getAllCategories(db);
+
+                Log.e("DATABASE", "Category Count: " + categories.length);
+
+                for (Category category_temp : categories) {
+                    Log.e("DATABASE", category_temp.toString());
+                }*/
 
                 return 0;
             }
 
             @Override
             protected void onPostExecute(Integer agentsCount) {
-                // TODO start correct activity
+
             }
         }.execute();
-
 
         Thread welcomeThread = new Thread() {
 
