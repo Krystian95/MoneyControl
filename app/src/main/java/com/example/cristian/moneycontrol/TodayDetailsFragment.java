@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -78,8 +79,10 @@ public class TodayDetailsFragment extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                Intent addNewExpenseIntent = new Intent(v.getContext(), AddNewEntryActivity.class);
-                startActivity(addNewExpenseIntent);
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Intent addNewExpenseIntent = new Intent(v.getContext(), AddNewEntryActivity.class);
+                    startActivity(addNewExpenseIntent);
+                }
 
                 return true;
             }

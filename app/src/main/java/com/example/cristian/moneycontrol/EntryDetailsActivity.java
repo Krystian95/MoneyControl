@@ -111,15 +111,20 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         String entry_type = "";
 
         if (intent != null) {
-            if (intent.hasExtra("entry_type")) {
-                entry_type = intent.getStringExtra("entry_type");
-            }
 
-            if (intent.hasExtra("category_name")) {
+            if (intent.hasExtra("category_id")) {
                 AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
-                Category category = AppDatabase.getCategoryByName(db, intent.getStringExtra("category_name"));
+                String category_id = String.valueOf(intent.getIntExtra("category_id", 0));
+                Category category = AppDatabase.getCategoryById(db, category_id);
                 category_name.setText(category.getName());
                 category_image.setImageResource(category.getIcon());
+
+                if (category.getType().equals("expense")) {
+                    entry_type = getString(R.string.Expense);
+                } else {
+                    entry_type = getString(R.string.Income);
+                }
+
                 isNewEntry = true;
             } else {
                 isNewEntry = false;

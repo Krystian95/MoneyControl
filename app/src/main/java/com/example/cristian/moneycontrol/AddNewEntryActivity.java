@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,10 +25,13 @@ public class AddNewEntryActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_add_new_entry);
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        /*viewPager.setOffscreenPageLimit(0);
+        viewPager.destroyDrawingCache();*/
         viewPager.setAdapter(new FragmentPagerAddNewEntryAdapter(getSupportFragmentManager(), AddNewEntryActivity.this));
 
         // Give the TabLayout the ViewPager

@@ -1,14 +1,9 @@
 package com.example.cristian.moneycontrol;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
-import android.util.Log;
 
 /**
  * Created by Cristian on 09/01/2018.
@@ -22,9 +17,11 @@ public class FragmentPagerAddNewEntryAdapter extends FragmentPagerAdapter {
             "Spesa"
     };
     private Context context;
+    private FragmentManager fm;
 
     public FragmentPagerAddNewEntryAdapter(FragmentManager fm, Context context) {
         super(fm);
+        this.fm = fm;
         this.context = context;
     }
 
@@ -36,8 +33,9 @@ public class FragmentPagerAddNewEntryAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-        switch (position){
+        switch (position) {
             case 0: // Income
+                //fm.beginTransaction().add(R.id.viewpager, new AddNewIncomeFragment()).commit();
                 return AddNewIncomeFragment.newInstance("?", "?");
 
             case 1: // Expense

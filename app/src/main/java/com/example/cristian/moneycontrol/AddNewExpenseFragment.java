@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,10 +79,12 @@ public class AddNewExpenseFragment extends Fragment {
 
         final String[] category_name = new String[categories.length];
         final int[] category_icon = new int[categories.length];
+        final int[] category_id = new int[categories.length];
 
         for (int i = 0; i < categories.length; i++) {
             category_name[i] = categories[i].getName();
             category_icon[i] = categories[i].getIcon();
+            category_id[i] = categories[i].getIdCategory();
         }
 
         CategoryGrid adapter = new CategoryGrid(view.getContext(), category_name, category_icon);
@@ -93,8 +96,7 @@ public class AddNewExpenseFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Intent addNewEntryDetailsIntent = new Intent(view.getContext(), EntryDetailsActivity.class);
-                addNewEntryDetailsIntent.putExtra("entry_type", getString(R.string.Expense));
-                addNewEntryDetailsIntent.putExtra("category_name", category_name[+position]);
+                addNewEntryDetailsIntent.putExtra("category_id", category_id[+position]);
                 startActivity(addNewEntryDetailsIntent);
             }
         });

@@ -66,19 +66,20 @@ public class StartActivity extends AppCompatActivity {
                     Log.e("DATABASE", entry_temp.toString());
                 }*/
 
-                Category[] categories = AppDatabase.getAllCategories(db);
-
-                if (categories.length == 0) {
-                    AppDatabase.setupDefaultCategories(db);
-                }
-
-                /*categories = AppDatabase.getAllCategories(db);
+                /*
+                categories = AppDatabase.getAllCategories(db);
 
                 Log.e("DATABASE", "Category Count: " + categories.length);
 
                 for (Category category_temp : categories) {
                     Log.e("DATABASE", category_temp.toString());
                 }*/
+
+                Category[] categories = AppDatabase.getAllCategories(db);
+
+                if (categories.length == 0) {
+                    AppDatabase.setupDefaultCategories(db);
+                }
 
                 return 0;
             }

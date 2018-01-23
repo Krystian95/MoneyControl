@@ -1,0 +1,21 @@
+<vector android:height="24dp" android:viewportHeight="48.0"
+    android:viewportWidth="48.0" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#00000000"
+        android:pathData="M28.71,12.61L33.03,8.3C33.73,7.6 34.57,7.18 35.55,7.04L41.99,7.04"
+        android:strokeAlpha="1" android:strokeColor="#9FA8DA"
+        android:strokeLineCap="butt" android:strokeLineJoin="miter" android:strokeWidth="2"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M18.13,33.1C17.55,33.68 16.6,33.68 16.01,33.1L11.06,28.15C10.48,27.56 10.48,26.61 11.06,26.03L17.64,19.45C18.22,18.87 20.23,17.8 20.82,18.39L26.83,22.28C27.41,22.87 27.41,23.82 26.83,24.4Z"
+        android:strokeAlpha="1" android:strokeColor="#455A64"
+        android:strokeLineCap="butt" android:strokeLineJoin="miter" android:strokeWidth="2"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M16.8,33.01L18.9,25.56C19.4,24.27 20.86,23.64 22.14,24.14L25.71,25.52"
+        android:strokeAlpha="1" android:strokeColor="#455A64"
+        android:strokeLineCap="butt" android:strokeLineJoin="miter" android:strokeWidth="2"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M10.78,41C8.54,39.46 7,36.94 7,34C7,31.62 7.98,29.52 9.52,28.12L12.2,25.44"
+        android:strokeAlpha="1" android:strokeColor="#455A64"
+        android:strokeLineCap="butt" android:strokeLineJoin="miter" android:strokeWidth="2"/>
+    <path android:fillColor="#DD2C00" android:pathData="M29.66,14.5L31.07,13.09L28.24,10.26L26.83,11.67C26.83,11.67 20.46,12.38 18.34,14.5C17.57,15.27 16.72,16.13 15.87,16.98C13.2,19.64 10.57,22.28 10.57,22.28L8.23,24.61C7.65,25.2 7.65,26.15 8.23,26.73L10.71,29.21L12.34,27.58L17.99,21.93C19.36,20.56 21.57,20.56 22.94,21.93L26.83,25.82L29.66,22.98Z"/>
+    <path android:fillColor="#FF3D00" android:pathData="M22.94,21.93L26.83,25.82L29.66,22.98L29.66,14.5L31.07,13.09L28.24,10.26L26.83,11.68C26.83,11.68 20.46,12.38 18.34,14.5C17.89,14.95 17.42,15.43 16.93,15.91Z"/>
+</vector>
