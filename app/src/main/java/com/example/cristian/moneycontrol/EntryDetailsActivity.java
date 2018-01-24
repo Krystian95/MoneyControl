@@ -49,6 +49,8 @@ import android.widget.Toast;
 import com.codetroopers.betterpickers.recurrencepicker.RecurrencePickerDialogFragment;
 import com.example.cristian.moneycontrol.database.AppDatabase;
 import com.example.cristian.moneycontrol.database.Category;
+import com.example.cristian.moneycontrol.database.Entry;
+import com.example.cristian.moneycontrol.database.Photo;
 import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import com.seatgeek.placesautocomplete.model.Place;
@@ -80,12 +82,17 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
     private TextView date;
     private TextView time;
     private Switch switch_repeat;
+    private EditText input_number;
+    private PlacesAutocompleteTextView address;
+    private EditText description;
 
     private static final String FRAG_TAG_RECUR_PICKER = "recurrencePickerDialogFragment";
     private boolean isNewEntry = false;
 
     //TODO set as stored into db
     private String mRrule = null;
+    private int category_id;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,16 +100,20 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         setContentView(R.layout.activity_entry_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        EditText input_number = findViewById(R.id.amount);
+        context = this;
+
+        input_number = findViewById(R.id.amount);
         TextView checkbox_paid_label = findViewById(R.id.checkbox_paid_label);
         TextView category_name = findViewById(R.id.category_name);
         ImageView category_image = findViewById(R.id.category_image);
-        final PlacesAutocompleteTextView address = findViewById(R.id.address);
+        address = findViewById(R.id.address);
         final CheckBox checkbox_paid = (CheckBox) findViewById(R.id.checkbox_paid);
+        description = (EditText) findViewById(R.id.description);
         date = (TextView) findViewById(R.id.date);
         time = (TextView) findViewById(R.id.time);
         switch_repeat = (Switch) findViewById(R.id.switch_repeat);
         final Button take_photo = (Button) findViewById(R.id.new_photo);
+        final Button save = (Button) findViewById(R.id.save_entry);
 
         Intent intent = getIntent();
 
@@ -114,8 +125,8 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
             if (intent.hasExtra("category_id")) {
                 AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
-                String category_id = String.valueOf(intent.getIntExtra("category_id", 0));
-                Category category = AppDatabase.getCategoryById(db, category_id);
+                category_id = intent.getIntExtra("category_id", 0);
+                Category category = AppDatabase.getCategoryById(db, String.valueOf(category_id));
                 category_name.setText(category.getName());
                 category_image.setImageResource(category.getIcon());
 
@@ -126,7 +137,9 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                 }
 
                 isNewEntry = true;
-            } else {
+            } else if (intent.hasExtra("entry_id")) {
+
+                //TODO get the entry object from database searching by its id.
                 isNewEntry = false;
             }
         }
@@ -382,6 +395,73 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                 }
             }
         });
+
+        /* save */
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (isNewEntry) {
+                    String date_raw = date.getText().toString();
+                    CustomCalendar calendar = new CustomCalendar();
+                    String date_time = calendar.convertToDateFormat(date_raw) + " " + time.getText().toString() + ":00";
+
+                    Entry new_entry = new Entry();
+                    new_entry.setIdCategory(category_id);
+                    new_entry.setAddress(address.getText().toString());
+
+                    Float amount = Float.parseFloat("0");
+
+                    if (input_number.getText() != null && !input_number.getText().toString().isEmpty()) {
+                        amount = Float.parseFloat(input_number.getText().toString());
+                    }
+
+                    new_entry.setAmount(amount);
+                    new_entry.setDateTime(date_time);
+                    new_entry.setDescription(description.getText().toString());
+                    new_entry.setRecurrenceRule(mRrule);
+
+                    AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+                    long new_entry_insered = AppDatabase.insertEntry(db, new_entry);
+
+                    Log.e("ENTRY INSERED", String.valueOf(new_entry_insered));
+
+                    AppDatabase.printAllEntries(db);
+
+                    setupIdEntryToPhotos(String.valueOf(new_entry_insered));
+
+                    Toast.makeText(v.getContext(), getString(R.string.entry_saved_succes), Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(EntryDetailsActivity.this, MainActivity.class);
+                    startActivity(intent);
+
+                } else {
+                    //TODO load current values
+                }
+            }
+        });
+    }
+
+    /*
+    Set the entry id of all photos with id entry "null" with the correct id entry (last insered)
+     */
+    private void setupIdEntryToPhotos(String id_entry) {
+
+        Log.e("LAST ID ENTRY", id_entry);
+
+        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+        Photo[] unlinked_photos = AppDatabase.getAllPhotosUnlinked(db);
+
+        Log.e("UNLINKED PHOTOS", String.valueOf(unlinked_photos.length));
+
+        for (Photo unlinked_photo : unlinked_photos) {
+            Log.e("UNLINKED PHOTOS", unlinked_photo.toString());
+            AppDatabase.updateIdEntryByAbsolutePath(db, unlinked_photo.getAbsolute_path(), id_entry);
+        }
+
+        AppDatabase.printAllPhotos(db);
+
     }
 
     /*
@@ -393,6 +473,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         File path = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         String photo_id = "23";
 
+        // TODO replace with db query
         photos = filterFileInFolder(path, photo_id);
         createThumbsList(photos);
     }
@@ -525,10 +606,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-        int entry_id = 65;
-        int photo_id = 23;
-
-        String imageFileName = entry_id + PHOTO_NAME_SEPARATOR + photo_id + PHOTO_NAME_SEPARATOR + timeStamp + "_";
+        String imageFileName = timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,
@@ -552,10 +630,21 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                 File photo = new File(lastPhotoAbsolutePath);
                 addThumb(photo, linearLayout);
 
-                Toast.makeText(this, R.string.picture_taken, Toast.LENGTH_SHORT);
+                Photo new_photo = new Photo();
+                new_photo.setAbsolute_path(lastPhotoAbsolutePath);
+                new_photo.setIdEntry("null");
+
+                if (!isNewEntry) {
+                    // TODO get the entry id
+                }
+
+                AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+                AppDatabase.insertPhoto(db, new_photo);
+
+                Toast.makeText(this, R.string.picture_taken, Toast.LENGTH_SHORT).show();
 
             } else {
-                Toast.makeText(this, R.string.picture_taken_failure, Toast.LENGTH_LONG);
+                Toast.makeText(this, R.string.picture_taken_failure, Toast.LENGTH_SHORT).show();
             }
         } else {
             if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -672,9 +761,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
         ImageButton imageButton = new ImageButton(this);
         imageButton.setLayoutParams(lp);
-        imageButton.setImageResource(R.drawable.ic_delete_black_24dp);
-        imageButton.setColorFilter(this.getResources().getColor(R.color.red));
-        imageButton.setAlpha(0.8f);
+        imageButton.setImageResource(R.drawable.ic_icons8_elimina);
         imageButton.setBackground(null);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -732,6 +819,11 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
                             removeThumb(indexToRemove);
                             photos_indexed.remove(indexToRemove);
+
+                            AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+                            AppDatabase.deletePhotoByAbsolutePath(db, photo_path);
+
+                            AppDatabase.printAllPhotos(db);
 
                             Toast.makeText(context, R.string.photo_deleted, Toast.LENGTH_SHORT).show();
                         }

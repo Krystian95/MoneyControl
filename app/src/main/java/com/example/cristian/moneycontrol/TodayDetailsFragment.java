@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -90,7 +89,7 @@ public class TodayDetailsFragment extends Fragment {
 
         /* Today date informations */
 
-        Calendar calendar = new Calendar();
+        CustomCalendar calendar = new CustomCalendar();
         Map date = calendar.getDateTime();
 
         TextView today_number = (TextView) view.findViewById(R.id.today_number);

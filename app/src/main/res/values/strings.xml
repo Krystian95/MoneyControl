@@ -48,4 +48,5 @@
     <string name="example_category">Divertimento</string>
     <string name="Expense">Spesa</string>
     <string name="Income">Entrata</string>
+    <string name="entry_saved_succes">Voce salvata correttamente</string>
 </resources>

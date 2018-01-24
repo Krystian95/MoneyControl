@@ -32,7 +32,7 @@ public class StartActivity extends AppCompatActivity {
 
                 /*Category category = new Category();
                 category.setName("Giardinaggio");
-                AppDatabase.addCategory(db, category);
+                AppDatabase.insertCategory(db, category);
 
                 Category[] categories = AppDatabase.getAllCategories(db);
 
@@ -56,7 +56,7 @@ public class StartActivity extends AppCompatActivity {
                 entry.setRecurrenceRule("rRule");
                 entry.setIdCategory(1);
 
-                AppDatabase.addEntry(db, entry);
+                AppDatabase.insertEntry(db, entry);
 
                 Entry[] entries = AppDatabase.getTodayEntries(db);
 

@@ -11,7 +11,7 @@ import android.arch.persistence.room.Update;
 public interface EntryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insert(Entry entry);
+    public long insert(Entry entry);
 
     @Update
     public abstract void update(Entry entry);

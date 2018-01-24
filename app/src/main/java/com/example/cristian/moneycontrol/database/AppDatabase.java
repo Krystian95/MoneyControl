@@ -4,6 +4,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+import android.util.Log;
 
 import com.example.cristian.moneycontrol.R;
 
@@ -11,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-@Database(entities = {Entry.class, Category.class}, version = 1)
+@Database(entities = {Entry.class, Category.class, Photo.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "money_control_db";
@@ -21,6 +22,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract EntryDao entryDao();
 
     public abstract CategoryDao categoryDao();
+
+    public abstract PhotoDao photoDao();
 
     public static AppDatabase getAppDatabase(Context context) {
         if (INSTANCE == null) {
@@ -36,12 +39,16 @@ public abstract class AppDatabase extends RoomDatabase {
         INSTANCE = null;
     }
 
-    public static void addCategory(final AppDatabase db, Category category) {
+    public static void insertCategory(final AppDatabase db, Category category) {
         db.categoryDao().insert(category);
     }
 
-    public static void addEntry(final AppDatabase db, Entry entry) {
-        db.entryDao().insert(entry);
+    public static long insertEntry(final AppDatabase db, Entry entry) {
+        return db.entryDao().insert(entry);
+    }
+
+    public static void insertPhoto(final AppDatabase db, Photo photo) {
+        db.photoDao().insert(photo);
     }
 
     public static Category[] getAllCategories(final AppDatabase db) {
@@ -75,12 +82,40 @@ public abstract class AppDatabase extends RoomDatabase {
         return db.entryDao().getEntriesByDateRange(from_date, to_date);
     }
 
+    public static Photo[] getAllPhotosUnlinked(final AppDatabase db) {
+        return db.photoDao().getAllUnlinked();
+    }
+
+    public static void deletePhotoByAbsolutePath(final AppDatabase db, String absolute_path) {
+        db.photoDao().deletePhotoByAbsolutePath(absolute_path);
+    }
+
+    public static void updateIdEntryByAbsolutePath(final AppDatabase db, String absolute_path, String id_entry) {
+        db.photoDao().updateIdEntryByAbsolutePath(absolute_path, id_entry);
+    }
+
     public static void deleteAllCategories(final AppDatabase db) {
         db.categoryDao().deleteAll();
     }
 
     public static void deleteAllEntries(final AppDatabase db) {
         db.entryDao().deleteAll();
+    }
+
+    public static void printAllPhotos(final AppDatabase db) {
+        Photo[] photos = db.photoDao().getAll();
+
+        for (Photo photo : photos) {
+            Log.e("DATABASE", photo.toString());
+        }
+    }
+
+    public static void printAllEntries(final AppDatabase db) {
+        Entry[] entries = db.entryDao().getAll();
+
+        for (Entry entry : entries) {
+            Log.e("DATABASE", entry.toString());
+        }
     }
 
     public static void setupDefaultCategories(AppDatabase db) {
@@ -112,7 +147,7 @@ public abstract class AppDatabase extends RoomDatabase {
             category.setIcon(income_category_image[i]);
             category.setName(income_category_name[i]);
             category.setType("income");
-            addCategory(db, category);
+            insertCategory(db, category);
         }
 
         String[] expense_category_name = {
@@ -180,7 +215,7 @@ public abstract class AppDatabase extends RoomDatabase {
             category.setIcon(expense_category_image[i]);
             category.setName(expense_category_name[i]);
             category.setType("expense");
-            addCategory(db, category);
+            insertCategory(db, category);
         }
 
     }

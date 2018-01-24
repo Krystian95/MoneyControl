@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by Cristian on 04/01/2018.
  */
 
-public class Calendar {
+public class CustomCalendar {
 
     public Map getDateTime() {
 
@@ -30,5 +30,13 @@ public class Calendar {
         date.put("month_year", text);
 
         return date;
+    }
+
+    public String convertToDateFormat(String current) {
+
+        String[] splitted = current.split("/");
+        String formatted = splitted[2] + "-" + splitted[1] + "-" + splitted[0];
+        return formatted;
+
     }
 }
