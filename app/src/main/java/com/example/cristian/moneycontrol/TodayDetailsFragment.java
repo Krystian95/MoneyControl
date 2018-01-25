@@ -9,8 +9,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.cristian.moneycontrol.database.AppDatabase;
+import com.example.cristian.moneycontrol.database.Category;
+import com.example.cristian.moneycontrol.database.Entry;
 
 import java.util.Map;
 
@@ -32,6 +38,8 @@ public class TodayDetailsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    GridView grid;
 
     private OnFragmentInteractionListener mListener;
 
@@ -99,6 +107,43 @@ public class TodayDetailsFragment extends Fragment {
         today_number.setText((String) date.get("day_number"));
         today_letter.setText((String) date.get("day_letter"));
         today_month_year.setText((String) date.get("month_year"));
+
+        /* Entries */
+
+        AppDatabase db = AppDatabase.getAppDatabase(this.getContext());
+        Entry[] entries = AppDatabase.getTodayEntries(db);
+
+        final String[] entries_id = new String[entries.length];
+        float total_expense = 0;
+        float total_income = 0;
+
+        for (int i = 0; i < entries.length; i++) {
+            entries_id[i] = String.valueOf(entries[i].getIdEntry());
+            Category category = AppDatabase.getCategoryById(db, String.valueOf(entries[i].getIdCategory()));
+            if (category.getType().equals("expense")) {
+                total_expense += entries[i].getAmount();
+            } else {
+                total_income += entries[i].getAmount();
+            }
+        }
+
+        EntriesGrid adapter = new EntriesGrid(view.getContext(), entries_id);
+        grid = (GridView) view.findViewById(R.id.gridViewTodayEntries);
+        grid.setAdapter(adapter);
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Intent intent = new Intent(view.getContext(), EntryDetailsActivity.class);
+                intent.putExtra("entry_id", entries_id[+position]);
+                startActivity(intent);
+            }
+        });
+
+        TextView total_expense_text = (TextView) view.findViewById(R.id.total_expense);
+        total_expense_text.setText((String.valueOf(total_expense)));
+        TextView total_income_text = (TextView) view.findViewById(R.id.total_income);
+        total_income_text.setText((String.valueOf(total_income)));
 
         return view;
 

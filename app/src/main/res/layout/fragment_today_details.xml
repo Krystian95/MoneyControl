@@ -4,52 +4,199 @@
     android:id="@+id/layout_today_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:maxHeight="90dp"
-    android:minHeight="90dp"
     tools:context="com.example.cristian.moneycontrol.TodayDetailsFragment">
 
-    <TextView
-        android:id="@+id/today_number"
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/example_day_number"
-        android:textAlignment="textEnd"
-        android:textAllCaps="false"
-        android:textSize="60sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/today_letter"
-        android:layout_width="135dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="21dp"
-        android:text="@string/example_day_letter"
-        android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/today_number"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/today_month_year"
-        android:layout_width="135dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:text="@string/example_month_year"
-        android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/today_number"
-        app:layout_constraintTop_toBottomOf="@+id/today_letter" />
-
-    <ImageView
-        android:id="@+id/add_new_expense"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="15dp"
-        android:contentDescription="@string/addnewexpense"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/today_letter"
+            android:layout_width="135dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="21dp"
+            android:text="@string/example_day_letter"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/today_number"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/today_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/example_day_number"
+            android:textAlignment="textEnd"
+            android:textAllCaps="false"
+            android:textSize="60sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/add_new_expense"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="15dp"
+            android:contentDescription="@string/addnewexpense"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_icons8_piu" />
+
+        <TextView
+            android:id="@+id/today_month_year"
+            android:layout_width="135dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/example_month_year"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/today_number"
+            app:layout_constraintTop_toBottomOf="@+id/today_letter" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintTop_toBottomOf="@+id/today_number"
+            tools:layout_editor_absoluteX="0dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="95dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_icons8_piu" />
+        app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/paid_today"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <GridView
+            android:id="@+id/gridViewTodayEntries"
+            android:layout_width="wrap_content"
+            android:layout_height="290dp"
+            android:layout_marginTop="8dp"
+            android:columnWidth="50dp"
+            android:gravity="center"
+            android:numColumns="1"
+            android:stretchMode="columnWidth"
+            app:layout_constraintBottom_toTopOf="@+id/total_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+        </GridView>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/total_layout"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/spese_totali"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginTop="14dp"
+                android:text="@string/total_expense"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/total_expense"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/entrate_totali"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/total_income"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/total_income"
+                app:layout_constraintTop_toBottomOf="@+id/spese_totali" />
+
+            <TextView
+                android:id="@+id/eur_income"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/EUR"
+                android:textColor="@color/green"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/eur_expense" />
+
+            <TextView
+                android:id="@+id/total_income"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/number_200"
+                android:textAlignment="textEnd"
+                android:textColor="@color/green"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/eur_income"
+                app:layout_constraintTop_toBottomOf="@+id/total_expense" />
+
+            <TextView
+                android:id="@+id/total_expense"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="14dp"
+                android:text="@string/number_500"
+                android:textAlignment="textEnd"
+                android:textColor="@color/red"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/eur_expense"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/eur_expense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="14dp"
+                android:text="@string/EUR"
+                android:textColor="@color/red"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

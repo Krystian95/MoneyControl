@@ -67,8 +67,16 @@ public abstract class AppDatabase extends RoomDatabase {
         return db.categoryDao().getCategoryById(category_id);
     }
 
+    public static Entry getEntryById(final AppDatabase db, String entry_id) {
+        return db.entryDao().getEntryById(entry_id);
+    }
+
     public static Entry[] getAllEntries(final AppDatabase db) {
         return db.entryDao().getAll();
+    }
+
+    public static Photo[] getPhotosByEntryId(final AppDatabase db, String entry_id) {
+        return db.photoDao().getPhotosByEntryId(entry_id);
     }
 
     public static Entry[] getTodayEntries(final AppDatabase db) {
@@ -88,6 +96,10 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static void deletePhotoByAbsolutePath(final AppDatabase db, String absolute_path) {
         db.photoDao().deletePhotoByAbsolutePath(absolute_path);
+    }
+
+    public static void deleteEntryById(final AppDatabase db, String entry_id) {
+        db.entryDao().deleteEntryById(entry_id);
     }
 
     public static void updateIdEntryByAbsolutePath(final AppDatabase db, String absolute_path, String id_entry) {

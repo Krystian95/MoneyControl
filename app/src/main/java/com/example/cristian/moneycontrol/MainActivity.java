@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         TodayFragment todayFragment = new TodayFragment();
-        /* todayFragment.setArguments(getIntent().getExtras()); */
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, todayFragment).commit();
 
         BottomNavigationView navigation = findViewById(R.id.navigation_bottom);

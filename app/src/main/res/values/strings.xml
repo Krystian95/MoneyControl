@@ -49,4 +49,11 @@
     <string name="Expense">Spesa</string>
     <string name="Income">Entrata</string>
     <string name="entry_saved_succes">Voce salvata correttamente</string>
+    <string name="Delete">Elimina</string>
+    <string name="entry_deleted">Voce eliminata</string>
+    <string name="paid_today">Pagate (oggi)</string>
+    <string name="total_income">ENTRATE TOTALI:</string>
+    <string name="total_expense">SPESE TOTALI:</string>
+    <string name="number_500">500</string>
+    <string name="number_200">200</string>
 </resources>

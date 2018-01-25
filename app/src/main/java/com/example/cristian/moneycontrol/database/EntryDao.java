@@ -19,6 +19,12 @@ public interface EntryDao {
     @Query("DELETE FROM entry")
     public void deleteAll();
 
+    @Query("DELETE FROM entry WHERE idEntry=:entry_id")
+    public void deleteEntryById(String entry_id);
+
+    @Query("SELECT * FROM entry WHERE idEntry=:entry_id")
+    public Entry getEntryById(String entry_id);
+
     @Query("SELECT * FROM entry WHERE dateTime >= Datetime(:from) AND dateTime <= Datetime(:to)")
     public Entry[] getEntriesByDateRange(String from, String to);
 

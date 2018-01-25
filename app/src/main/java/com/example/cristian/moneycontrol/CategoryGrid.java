@@ -48,9 +48,9 @@ public class CategoryGrid extends BaseAdapter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         grid = new View(mContext);
-        grid = inflater.inflate(R.layout.grid_element, null);
+        grid = inflater.inflate(R.layout.grid_element_category, null);
         TextView textView = (TextView) grid.findViewById(R.id.grid_text);
-        ImageView imageView = (ImageView) grid.findViewById(R.id.grid_image);
+        ImageView imageView = (ImageView) grid.findViewById(R.id.category_image);
         textView.setText(web[position]);
         imageView.setImageResource(Imageid[position]);
 

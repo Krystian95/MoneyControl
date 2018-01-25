@@ -73,7 +73,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
     private static final int PERMISSION_REQUEST_CAMERA = 1;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 2;
-    private static final String PHOTO_NAME_SEPARATOR = "-";
 
     private ArrayList<String> photos_indexed = new ArrayList<>();
     private String lastPhotoAbsolutePath;
@@ -92,15 +91,13 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
     //TODO set as stored into db
     private String mRrule = null;
     private int category_id;
-    private Context context;
+    private String idEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        context = this;
 
         input_number = findViewById(R.id.amount);
         TextView checkbox_paid_label = findViewById(R.id.checkbox_paid_label);
@@ -138,18 +135,37 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
                 isNewEntry = true;
             } else if (intent.hasExtra("entry_id")) {
+                idEntry = intent.getStringExtra("entry_id");
 
                 //TODO get the entry object from database searching by its id.
+
                 isNewEntry = false;
             }
         }
 
+        Button delete_button = (Button) findViewById(R.id.delete_entry);
+
         if (isNewEntry) {
             setTitle(getString(R.string.expense_new_title) + " " + entry_type);
+            delete_button.setVisibility(View.INVISIBLE);
         } else {
             setTitle(entry_type);
+            delete_button.setVisibility(View.VISIBLE);
             //TODO load current values
         }
+
+        delete_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+                AppDatabase.deleteEntryById(db, idEntry);
+
+                Toast.makeText(v.getContext(), getString(R.string.entry_deleted), Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(EntryDetailsActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         /* Keyboard show for input number */
 
@@ -425,9 +441,9 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                     AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
                     long new_entry_insered = AppDatabase.insertEntry(db, new_entry);
 
-                    Log.e("ENTRY INSERED", String.valueOf(new_entry_insered));
+                    //Log.e("ENTRY INSERED", String.valueOf(new_entry_insered));
 
-                    AppDatabase.printAllEntries(db);
+                    //AppDatabase.printAllEntries(db);
 
                     setupIdEntryToPhotos(String.valueOf(new_entry_insered));
 
@@ -448,19 +464,19 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
      */
     private void setupIdEntryToPhotos(String id_entry) {
 
-        Log.e("LAST ID ENTRY", id_entry);
+        //Log.e("LAST ID ENTRY", id_entry);
 
         AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
         Photo[] unlinked_photos = AppDatabase.getAllPhotosUnlinked(db);
 
-        Log.e("UNLINKED PHOTOS", String.valueOf(unlinked_photos.length));
+        //Log.e("UNLINKED PHOTOS", String.valueOf(unlinked_photos.length));
 
         for (Photo unlinked_photo : unlinked_photos) {
-            Log.e("UNLINKED PHOTOS", unlinked_photo.toString());
+            //Log.e("UNLINKED PHOTOS", unlinked_photo.toString());
             AppDatabase.updateIdEntryByAbsolutePath(db, unlinked_photo.getAbsolute_path(), id_entry);
         }
 
-        AppDatabase.printAllPhotos(db);
+        //AppDatabase.printAllPhotos(db);
 
     }
 
@@ -468,13 +484,8 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
     Setup the thumbs list for the existing photos of the current entry
      */
     private void setupExistingPhotos() {
-
-        ArrayList<File> photos = new ArrayList<File>();
-        File path = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        String photo_id = "23";
-
-        // TODO replace with db query
-        photos = filterFileInFolder(path, photo_id);
+        ArrayList<File> photos;
+        photos = getEntryPhotos();
         createThumbsList(photos);
     }
 
@@ -513,28 +524,17 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
     /*
     Returns all File in the photo folder that match with the filter (photo's id)
      */
-    public ArrayList<File> filterFileInFolder(File dir, String photo_id) {
+    public ArrayList<File> getEntryPhotos() {
 
-        ArrayList<File> photos = new ArrayList<File>();
+        ArrayList<File> photos = new ArrayList<>();
 
-        if (dir.isDirectory()) {
+        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
 
-            File[] list = dir.listFiles();
+        Photo[] photos_path = AppDatabase.getPhotosByEntryId(db, idEntry);
 
-            for (int i = 0; i < list.length; i++) {
-
-                String fileName = list[i].getName();
-
-                if (count(fileName, PHOTO_NAME_SEPARATOR.charAt(0)) == 2) {
-
-                    String[] separated = fileName.split(PHOTO_NAME_SEPARATOR);
-
-                    if (separated[1].equals(photo_id)) {
-                        photos.add(list[i]);
-                        Log.e("Photo Found", photos.get(i).getAbsolutePath());
-                    }
-                }
-            }
+        for (Photo photo : photos_path) {
+            File photo_temp = new File(photo.getAbsolute_path());
+            photos.add(photo_temp);
         }
 
         return photos;
@@ -823,7 +823,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                             AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
                             AppDatabase.deletePhotoByAbsolutePath(db, photo_path);
 
-                            AppDatabase.printAllPhotos(db);
+                            //AppDatabase.printAllPhotos(db);
 
                             Toast.makeText(context, R.string.photo_deleted, Toast.LENGTH_SHORT).show();
                         }
@@ -891,7 +891,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         LinearLayout linearLayout = findViewById(R.id.thumb_container);
 
         for (int i = 0; i < photos.size(); i++) {
-
             addThumb(photos.get(i), linearLayout);
         }
     }
@@ -950,7 +949,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
         while (it.hasNext() && (!rule.isInfinite() || maxInstances-- > 0)) {
             DateTime nextInstance = it.nextDateTime();
-            Log.e("EVENT:", String.valueOf(getDate(nextInstance.getTimestamp())));
+            //Log.e("EVENT:", String.valueOf(getDate(nextInstance.getTimestamp())));
         }
     }
 }

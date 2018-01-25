@@ -30,8 +30,6 @@ public class AddNewEntryActivity extends AppCompatActivity implements
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        /*viewPager.setOffscreenPageLimit(0);
-        viewPager.destroyDrawingCache();*/
         viewPager.setAdapter(new FragmentPagerAddNewEntryAdapter(getSupportFragmentManager(), AddNewEntryActivity.this));
 
         // Give the TabLayout the ViewPager
