@@ -14,7 +14,10 @@ public interface EntryDao {
     public long insert(Entry entry);
 
     @Update
-    public abstract void update(Entry entry);
+    public void update(Entry entry);
+
+    @Query("SELECT * FROM entry WHERE recurrenceRule<>'null'")
+    public Entry[] getAllWithRrule();
 
     @Query("DELETE FROM entry")
     public void deleteAll();
@@ -25,16 +28,11 @@ public interface EntryDao {
     @Query("SELECT * FROM entry WHERE idEntry=:entry_id")
     public Entry getEntryById(String entry_id);
 
-    @Query("SELECT * FROM entry WHERE dateTime >= Datetime(:from) AND dateTime <= Datetime(:to)")
+    @Query("SELECT * FROM entry WHERE dateTime >= Datetime(:from) AND dateTime <= Datetime(:to) AND recurrenceRule='null' ORDER BY dateTime")
     public Entry[] getEntriesByDateRange(String from, String to);
 
     @Delete
     void delete(Entry entry);
-
-    /*@Query("SELECT * FROM entry "
-            + "INNER JOIN category ON category.idCategory = entry.idCategory "
-            + "WHERE dateTime = :date_time")
-    public Entry[] loadEntriesByDate(long date_time);*/
 
     @Query("SELECT * FROM entry")
     public Entry[] getAll();

@@ -21,7 +21,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -55,11 +54,6 @@ import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import com.seatgeek.placesautocomplete.model.Place;
 
-import org.dmfs.rfc5545.DateTime;
-import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
-import org.dmfs.rfc5545.recur.RecurrenceRule;
-import org.dmfs.rfc5545.recur.RecurrenceRuleIterator;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -67,7 +61,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 public class EntryDetailsActivity extends AppCompatActivity implements RecurrencePickerDialogFragment.OnRecurrenceSetListener {
 
@@ -81,17 +74,19 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
     private TextView date;
     private TextView time;
     private Switch switch_repeat;
-    private EditText input_number;
+    private EditText amount;
     private PlacesAutocompleteTextView address;
     private EditText description;
 
     private static final String FRAG_TAG_RECUR_PICKER = "recurrencePickerDialogFragment";
     private boolean isNewEntry = false;
 
-    //TODO set as stored into db
     private String mRrule = null;
     private int category_id;
     private String idEntry;
+    private Entry current_entry;
+    private Category current_category;
+    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +94,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         setContentView(R.layout.activity_entry_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        input_number = findViewById(R.id.amount);
+        amount = findViewById(R.id.amount);
         TextView checkbox_paid_label = findViewById(R.id.checkbox_paid_label);
         TextView category_name = findViewById(R.id.category_name);
         ImageView category_image = findViewById(R.id.category_image);
@@ -120,8 +115,9 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
         if (intent != null) {
 
+            db = AppDatabase.getAppDatabase(getApplicationContext());
+
             if (intent.hasExtra("category_id")) {
-                AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
                 category_id = intent.getIntExtra("category_id", 0);
                 Category category = AppDatabase.getCategoryById(db, String.valueOf(category_id));
                 category_name.setText(category.getName());
@@ -137,7 +133,10 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             } else if (intent.hasExtra("entry_id")) {
                 idEntry = intent.getStringExtra("entry_id");
 
-                //TODO get the entry object from database searching by its id.
+                current_entry = AppDatabase.getEntryById(db, idEntry);
+                current_category = AppDatabase.getCategoryById(db, String.valueOf(current_entry.getIdCategory()));
+
+                entry_type = current_category.getName();
 
                 isNewEntry = false;
             }
@@ -151,13 +150,29 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         } else {
             setTitle(entry_type);
             delete_button.setVisibility(View.VISIBLE);
-            //TODO load current values
+
+            category_name.setText(current_category.getName());
+            category_image.setImageResource(current_category.getIcon());
+            amount.setText(String.valueOf(current_entry.getAmount()));
+            address.setText(current_entry.getAddress());
+            description.setText(current_entry.getDescription());
+            date.setText(current_entry.getDate());
+            time.setText(current_entry.getTime());
+            String mRrule_temp = current_entry.getRecurrenceRule();
+
+            if (mRrule_temp.equals("null") || mRrule_temp == null || mRrule_temp.equals("")) {
+                mRrule = null;
+                switch_repeat.setChecked(false);
+            } else {
+                mRrule = mRrule_temp;
+                switch_repeat.setChecked(true);
+            }
         }
 
         delete_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+
                 AppDatabase.deleteEntryById(db, idEntry);
 
                 Toast.makeText(v.getContext(), getString(R.string.entry_deleted), Toast.LENGTH_SHORT).show();
@@ -167,12 +182,17 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             }
         });
 
-        /* Keyboard show for input number */
+        /* Keyboard show for amount input number */
 
-        input_number.requestFocus();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        if (isNewEntry) {
+            amount.requestFocus();
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        } else {
+            amount.clearFocus();
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
 
-        input_number.setOnKeyListener(new View.OnKeyListener() {
+        amount.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -184,24 +204,27 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
         /* Datepicker */
 
-        final Calendar c = Calendar.getInstance();
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
-        int mMonth = c.get(Calendar.MONTH) + 1;
-        int mYear = c.get(Calendar.YEAR);
+        if (isNewEntry) {
+            final Calendar c = Calendar.getInstance();
+            int mDay = c.get(Calendar.DAY_OF_MONTH);
+            int mMonth = c.get(Calendar.MONTH) + 1;
+            int mYear = c.get(Calendar.YEAR);
 
-        String selectedDay = String.valueOf(mDay);
-        String selectedMonth = String.valueOf(mMonth);
-        String selectedYear = String.valueOf(mYear);
+            String selectedDay = String.valueOf(mDay);
+            String selectedMonth = String.valueOf(mMonth);
+            String selectedYear = String.valueOf(mYear);
 
-        if (mDay < 10) {
-            selectedDay = "0" + selectedDay;
+            if (mDay < 10) {
+                selectedDay = "0" + selectedDay;
+            }
+
+            if ((mMonth + 1) < 10) {
+                selectedMonth = "0" + selectedMonth;
+            }
+
+            date.setText(selectedDay + "/" + selectedMonth + "/" + selectedYear);
         }
 
-        if ((mMonth + 1) < 10) {
-            selectedMonth = "0" + selectedMonth;
-        }
-
-        date.setText(selectedDay + "/" + selectedMonth + "/" + selectedYear);
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -251,22 +274,24 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
         /* Timepicker */
 
-        Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mcurrentTime.get(Calendar.MINUTE);
+        if (isNewEntry) {
+            Calendar mcurrentTime = Calendar.getInstance();
+            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+            int minute = mcurrentTime.get(Calendar.MINUTE);
 
-        String selectedHourString = String.valueOf(hour);
-        String selectedMinuteString = String.valueOf(minute);
+            String selectedHourString = String.valueOf(hour);
+            String selectedMinuteString = String.valueOf(minute);
 
-        if (hour < 10) {
-            selectedHourString = "0" + hour;
+            if (hour < 10) {
+                selectedHourString = "0" + hour;
+            }
+
+            if (minute < 10) {
+                selectedMinuteString = "0" + minute;
+            }
+
+            time.setText(selectedHourString + ":" + selectedMinuteString);
         }
-
-        if (minute < 10) {
-            selectedMinuteString = "0" + minute;
-        }
-
-        time.setText(selectedHourString + ":" + selectedMinuteString);
 
         time.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -418,43 +443,52 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             @Override
             public void onClick(View v) {
 
-                if (isNewEntry) {
-                    String date_raw = date.getText().toString();
-                    CustomCalendar calendar = new CustomCalendar();
-                    String date_time = calendar.convertToDateFormat(date_raw) + " " + time.getText().toString() + ":00";
+                Entry entry = new Entry();
 
-                    Entry new_entry = new Entry();
-                    new_entry.setIdCategory(category_id);
-                    new_entry.setAddress(address.getText().toString());
-
-                    Float amount = Float.parseFloat("0");
-
-                    if (input_number.getText() != null && !input_number.getText().toString().isEmpty()) {
-                        amount = Float.parseFloat(input_number.getText().toString());
-                    }
-
-                    new_entry.setAmount(amount);
-                    new_entry.setDateTime(date_time);
-                    new_entry.setDescription(description.getText().toString());
-                    new_entry.setRecurrenceRule(mRrule);
-
-                    AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
-                    long new_entry_insered = AppDatabase.insertEntry(db, new_entry);
-
-                    //Log.e("ENTRY INSERED", String.valueOf(new_entry_insered));
-
-                    //AppDatabase.printAllEntries(db);
-
-                    setupIdEntryToPhotos(String.valueOf(new_entry_insered));
-
-                    Toast.makeText(v.getContext(), getString(R.string.entry_saved_succes), Toast.LENGTH_SHORT).show();
-
-                    Intent intent = new Intent(EntryDetailsActivity.this, MainActivity.class);
-                    startActivity(intent);
-
+                if (!isNewEntry) {
+                    entry = current_entry;
                 } else {
-                    //TODO load current values
+                    entry.setIdCategory(category_id);
                 }
+
+                String date_raw = date.getText().toString();
+                CustomCalendar calendar = new CustomCalendar();
+                String date_time = calendar.convertToDateFormat(date_raw) + " " + time.getText().toString() + ":00";
+
+                Float amount = Float.parseFloat("0");
+
+                if (EntryDetailsActivity.this.amount.getText() != null && !EntryDetailsActivity.this.amount.getText().toString().isEmpty()) {
+                    amount = Float.parseFloat(EntryDetailsActivity.this.amount.getText().toString());
+                }
+
+                entry.setAmount(amount);
+                entry.setDateTime(date_time);
+                entry.setDescription(description.getText().toString());
+                entry.setAddress(address.getText().toString());
+
+                if (switch_repeat.isChecked()) {
+                    entry.setRecurrenceRule(mRrule);
+                } else {
+                    entry.setRecurrenceRule("null");
+                }
+
+                long new_entry_insered;
+
+                if (isNewEntry) {
+                    new_entry_insered = AppDatabase.insertEntry(db, entry);
+                } else {
+                    AppDatabase.updateEntry(db, entry);
+                    new_entry_insered = entry.getIdEntry();
+                }
+
+                Log.e("DATABASE", entry.toString());
+
+                setupIdEntryToPhotos(String.valueOf(new_entry_insered));
+
+                Toast.makeText(v.getContext(), getString(R.string.entry_saved_succes), Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(EntryDetailsActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -464,20 +498,11 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
      */
     private void setupIdEntryToPhotos(String id_entry) {
 
-        //Log.e("LAST ID ENTRY", id_entry);
-
-        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
         Photo[] unlinked_photos = AppDatabase.getAllPhotosUnlinked(db);
 
-        //Log.e("UNLINKED PHOTOS", String.valueOf(unlinked_photos.length));
-
         for (Photo unlinked_photo : unlinked_photos) {
-            //Log.e("UNLINKED PHOTOS", unlinked_photo.toString());
             AppDatabase.updateIdEntryByAbsolutePath(db, unlinked_photo.getAbsolute_path(), id_entry);
         }
-
-        //AppDatabase.printAllPhotos(db);
-
     }
 
     /*
@@ -527,8 +552,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
     public ArrayList<File> getEntryPhotos() {
 
         ArrayList<File> photos = new ArrayList<>();
-
-        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
 
         Photo[] photos_path = AppDatabase.getPhotosByEntryId(db, idEntry);
 
@@ -635,10 +658,9 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                 new_photo.setIdEntry("null");
 
                 if (!isNewEntry) {
-                    // TODO get the entry id
+                    new_photo.setIdEntry(idEntry);
                 }
 
-                AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
                 AppDatabase.insertPhoto(db, new_photo);
 
                 Toast.makeText(this, R.string.picture_taken, Toast.LENGTH_SHORT).show();
@@ -648,9 +670,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             }
         } else {
             if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-
                 deleteFileCustom(lastPhotoAbsolutePath);
-
             }
         }
     }
@@ -681,23 +701,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         } else {
             return true;
         }
-    }
-
-    /*
-    Return date time in milliseconds
-     */
-    private long dateTimeToMillis(String date, String time) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-        Date strDate = null;
-        try {
-            strDate = sdf.parse(date + " " + time);
-            return strDate.getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return 0;
     }
 
     /*
@@ -739,7 +742,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
 
         imgView.setImageBitmap(myBitmap);
         imgView.setLayoutParams(new android.view.ViewGroup.LayoutParams(200, 250));
@@ -820,10 +822,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                             removeThumb(indexToRemove);
                             photos_indexed.remove(indexToRemove);
 
-                            AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
                             AppDatabase.deletePhotoByAbsolutePath(db, photo_path);
-
-                            //AppDatabase.printAllPhotos(db);
 
                             Toast.makeText(context, R.string.photo_deleted, Toast.LENGTH_SHORT).show();
                         }
@@ -849,10 +848,11 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
     private boolean deleteFileCustom(String photo_path) {
 
         File file = new File(photo_path);
+
+        AppDatabase.deletePhotoByAbsolutePath(db, photo_path);
+
         if (file.exists()) {
             file.delete();
-
-            //TODO delete also from database
             return true;
         }
 
@@ -907,6 +907,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                deleteTempPhotos();
                 finish();
                 return true;
         }
@@ -918,38 +919,18 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         return true;
     }
 
-    private String getDate(long time) {
-        Calendar cal = Calendar.getInstance(Locale.ITALY);
-        cal.setTimeInMillis(time);
-        String date = DateFormat.format("dd-MM-yyyy HH:mm", cal).toString();
-        return date;
+    @Override
+    public void onRecurrenceSet(String rrule) {
+        mRrule = rrule;
+    }
+
+    private void deleteTempPhotos() {
+        AppDatabase.deleteAllUnlinked(db);
     }
 
     @Override
-    public void onRecurrenceSet(String rrule) {
-
-        if (rrule != null) {
-            mRrule = rrule;
-        }
-
-        RecurrenceRule rule = null;
-        try {
-            rule = new RecurrenceRule(rrule);
-        } catch (InvalidRecurrenceRuleException e) {
-            e.printStackTrace();
-        }
-
-        //TODO replace with timestamp start event
-        long startMillis = dateTimeToMillis(date.getText().toString(), time.getText().toString());
-        DateTime start = new DateTime(startMillis);
-
-        RecurrenceRuleIterator it = rule.iterator(start);
-
-        int maxInstances = 100; // limit instances for rules that recur forever
-
-        while (it.hasNext() && (!rule.isInfinite() || maxInstances-- > 0)) {
-            DateTime nextInstance = it.nextDateTime();
-            //Log.e("EVENT:", String.valueOf(getDate(nextInstance.getTimestamp())));
-        }
+    public void onBackPressed() {
+        deleteTempPhotos();
+        super.onBackPressed();
     }
 }

@@ -3,6 +3,9 @@ package com.example.cristian.moneycontrol.database;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
+import android.util.Log;
+
+import com.example.cristian.moneycontrol.CustomCalendar;
 
 @Entity(foreignKeys = @ForeignKey(entity = Category.class,
         parentColumns = "idCategory",
@@ -20,7 +23,6 @@ public class Entry {
 
     private String address;
 
-    //@TypeConverters(DateConverter.class)
     private String dateTime;
 
     private String recurrenceRule;
@@ -79,6 +81,20 @@ public class Entry {
 
     public void setRecurrenceRule(String recurrence_rule) {
         this.recurrenceRule = recurrence_rule;
+    }
+
+    public String getDate() {
+        String dateTime = this.getDateTime();
+        CustomCalendar calendar = new CustomCalendar();
+        String[] splitted = dateTime.split(" ");
+        return calendar.convertToLocalFormat(splitted[0]);
+
+    }
+
+    public String getTime() {
+        String dateTime = this.getDateTime();
+        String[] splitted = dateTime.split(" ");
+        return splitted[1].substring(0, 5);
     }
 
     public String toString() {

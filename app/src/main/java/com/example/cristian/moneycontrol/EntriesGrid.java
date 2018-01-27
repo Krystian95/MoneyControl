@@ -1,7 +1,6 @@
 package com.example.cristian.moneycontrol;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,8 @@ import com.example.cristian.moneycontrol.database.AppDatabase;
 import com.example.cristian.moneycontrol.database.Category;
 import com.example.cristian.moneycontrol.database.Entry;
 
+import java.util.List;
+
 /**
  * Created by Cristian on 15/01/2018.
  */
@@ -20,10 +21,10 @@ import com.example.cristian.moneycontrol.database.Entry;
 public class EntriesGrid extends BaseAdapter {
 
     private Context mContext;
-    String[] entries_id;
+    List<String> entries_id;
     private AppDatabase db;
 
-    public EntriesGrid(Context c, String[] entries_id) {
+    public EntriesGrid(Context c, List<String> entries_id) {
         mContext = c;
         this.entries_id = entries_id;
         this.db = AppDatabase.getAppDatabase(c);
@@ -31,7 +32,7 @@ public class EntriesGrid extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return entries_id.length;
+        return entries_id.size();
     }
 
     @Override
@@ -47,7 +48,7 @@ public class EntriesGrid extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Entry entry = AppDatabase.getEntryById(db, entries_id[position]);
+        Entry entry = AppDatabase.getEntryById(db, entries_id.get(position));
         Category category = AppDatabase.getCategoryById(db, String.valueOf(entry.getIdCategory()));
 
         View grid;

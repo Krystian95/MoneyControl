@@ -9,7 +9,8 @@
         android:id="@+id/sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="fixed" />
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="#757575" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
@@ -22,6 +23,8 @@
         android:id="@+id/button_undo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/undo" />
+        android:background="@color/light_gray"
+        android:text="@string/undo"
+        android:textColor="@color/white" />
 
 </LinearLayout>

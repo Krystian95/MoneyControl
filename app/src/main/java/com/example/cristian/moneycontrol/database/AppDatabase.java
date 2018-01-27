@@ -47,6 +47,14 @@ public abstract class AppDatabase extends RoomDatabase {
         return db.entryDao().insert(entry);
     }
 
+    public static void updateEntry(final AppDatabase db, Entry entry) {
+        db.entryDao().update(entry);
+    }
+
+    public static void deleteAllUnlinked(final AppDatabase db) {
+        db.photoDao().deleteAllUnlinked();
+    }
+
     public static void insertPhoto(final AppDatabase db, Photo photo) {
         db.photoDao().insert(photo);
     }
@@ -73,6 +81,10 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static Entry[] getAllEntries(final AppDatabase db) {
         return db.entryDao().getAll();
+    }
+
+    public static Entry[] getAllWithRrule(final AppDatabase db) {
+        return db.entryDao().getAllWithRrule();
     }
 
     public static Photo[] getPhotosByEntryId(final AppDatabase db, String entry_id) {

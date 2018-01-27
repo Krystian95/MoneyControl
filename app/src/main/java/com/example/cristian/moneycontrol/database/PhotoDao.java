@@ -21,6 +21,9 @@ public interface PhotoDao {
     @Query("SELECT * FROM photo WHERE idEntry='null'")
     public Photo[] getAllUnlinked();
 
+    @Query("DELETE FROM photo WHERE idEntry='null'")
+    public void deleteAllUnlinked();
+
     @Query("UPDATE photo SET idEntry=:id_entry WHERE absolute_path=:absolute_path")
     public void updateIdEntryByAbsolutePath(String absolute_path, String id_entry);
 
