@@ -3,12 +3,8 @@ package com.example.cristian.moneycontrol;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,14 +12,12 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BalanceDetailsFragment.OnFragmentInteractionListener} interface
+ * {@link YearlyBalanceFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link BalanceDetailsFragment#newInstance} factory method to
+ * Use the {@link YearlyBalanceFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BalanceDetailsFragment extends Fragment implements
-        FragmentPagerBalanceAdapter.OnFragmentInteractionListener,
-        YearlyBalanceFragment.OnFragmentInteractionListener{
+public class YearlyBalanceFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -35,7 +29,7 @@ public class BalanceDetailsFragment extends Fragment implements
 
     private OnFragmentInteractionListener mListener;
 
-    public BalanceDetailsFragment() {
+    public YearlyBalanceFragment() {
         // Required empty public constructor
     }
 
@@ -45,11 +39,11 @@ public class BalanceDetailsFragment extends Fragment implements
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment BalanceDetailsFragment.
+     * @return A new instance of fragment YearlyBalanceFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BalanceDetailsFragment newInstance(String param1, String param2) {
-        BalanceDetailsFragment fragment = new BalanceDetailsFragment();
+    public static YearlyBalanceFragment newInstance(String param1, String param2) {
+        YearlyBalanceFragment fragment = new YearlyBalanceFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,7 +54,6 @@ public class BalanceDetailsFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -68,28 +61,10 @@ public class BalanceDetailsFragment extends Fragment implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.menu_balance, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_balance_details, container, false);
-
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager_balance);
-        viewPager.setAdapter(new FragmentPagerBalanceAdapter(this.getFragmentManager()));
-
-        // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.sliding_tabs_balance);
-        tabLayout.setupWithViewPager(viewPager);
-
-        viewPager.setCurrentItem(2);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_yearly_balance, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -114,11 +89,6 @@ public class BalanceDetailsFragment extends Fragment implements
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 
     /**

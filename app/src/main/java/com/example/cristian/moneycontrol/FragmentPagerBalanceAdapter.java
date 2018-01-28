@@ -9,20 +9,18 @@ import android.support.v4.app.FragmentPagerAdapter;
  * Created by Cristian on 09/01/2018.
  */
 
-public class FragmentPagerAddNewEntryAdapter extends FragmentPagerAdapter {
+public class FragmentPagerBalanceAdapter extends FragmentPagerAdapter {
 
-    final int PAGE_COUNT = 2;
+    final int PAGE_COUNT = 4;
     private String tabTitles[] = new String[]{
-            "Entrata",
-            "Spesa"
+            "Giorno",
+            "Settimana",
+            "Mese",
+            "Anno"
     };
-    private Context context;
-    private FragmentManager fm;
 
-    public FragmentPagerAddNewEntryAdapter(FragmentManager fm, Context context) {
+    public FragmentPagerBalanceAdapter(FragmentManager fm) {
         super(fm);
-        this.fm = fm;
-        this.context = context;
     }
 
     @Override
@@ -34,11 +32,17 @@ public class FragmentPagerAddNewEntryAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
 
         switch (position) {
-            case 0: // Income
-                return AddNewIncomeFragment.newInstance("?", "?");
+            case 0: // Daily
+                return YearlyBalanceFragment.newInstance("?", "?");
 
-            case 1: // Expense
-                return AddNewExpenseFragment.newInstance("?", "?");
+            case 1: // Weekly
+                return YearlyBalanceFragment.newInstance("?", "?");
+
+            case 2: // Monthly
+                return YearlyBalanceFragment.newInstance("?", "?");
+
+            case 3: // Yearly
+                return YearlyBalanceFragment.newInstance("?", "?");
         }
 
         return null;

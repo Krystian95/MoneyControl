@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/navigation_today"
-        android:icon="@drawable/ic_today_black_24dp"
+        android:icon="@drawable/ic_icons8_agenda_filled"
         android:title="@string/navigation_today" />
 
     <item
         android:id="@+id/navigation_balance"
-        android:icon="@drawable/ic_account_balance_black_24dp"
+        android:icon="@drawable/ic_icons8_grafico_combinato_filled"
         android:title="@string/navigation_balance" />
 
     <item

@@ -27,7 +27,7 @@
                     android:layout_width="135dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginTop="21dp"
+                    android:layout_marginTop="22dp"
                     android:text="@string/example_day_letter"
                     android:textSize="20sp"
                     app:layout_constraintStart_toEndOf="@+id/today_number"
