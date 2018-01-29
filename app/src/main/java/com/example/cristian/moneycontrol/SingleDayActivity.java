@@ -3,7 +3,6 @@ package com.example.cristian.moneycontrol;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,22 +37,17 @@ public class SingleDayActivity extends AppCompatActivity {
         String month = calendar.getCurrentMonth();
         String year = calendar.getCurrentYear();
 
-        Log.e("DATE", day + "#" + month + "#" + year);
-
         if (intent != null) {
             if (intent.hasExtra("day") && intent.hasExtra("month") && intent.hasExtra("year")) {
                 day = String.valueOf(intent.getIntExtra("day", 01));
                 month = intent.getStringExtra("month");
                 year = intent.getStringExtra("year");
+
+                if (Integer.valueOf(day) < 10) {
+                    day = "0" + day;
+                }
             }
         }
-
-        Log.e("DATE", day + "#" + month + "#" + year);
-
-        if (Integer.valueOf(day) < 10) {
-            day = "0" + day;
-        }
-        Log.e("DATE", day + "#" + month + "#" + year);
 
         TextView day_label = (TextView) findViewById(R.id.day);
         day_label.setText(day);
@@ -83,7 +77,7 @@ public class SingleDayActivity extends AppCompatActivity {
             }
         }
 
-        gridTodayEntries = (GridView) findViewById(R.id.gridViewTodayEntriesPaid);
+        gridTodayEntries = (GridView) findViewById(R.id.gridViewBalanceDaily);
 
         ViewGroup.LayoutParams layoutParams = gridTodayEntries.getLayoutParams();
         layoutParams.height = getGridViewSuitedHeight(day_entries_id.size());

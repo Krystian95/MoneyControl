@@ -2,6 +2,7 @@ package com.example.cristian.moneycontrol;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,10 @@ import android.widget.TextView;
 import com.example.cristian.moneycontrol.database.AppDatabase;
 import com.example.cristian.moneycontrol.database.Category;
 import com.example.cristian.moneycontrol.database.Entry;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -150,6 +155,28 @@ public class DailyBalanceFragment extends Fragment {
         total_expense.setText(Utils.formatNumber(total_expense_value));
         TextView total_saving = (TextView) view.findViewById(R.id.total_saving);
         total_saving.setText(Utils.formatNumber(total_saving_value));
+
+        List<BarEntry> char_data = new ArrayList<>();
+        char_data.add(new BarEntry(3, total_income_value));
+        char_data.add(new BarEntry(2, total_expense_value));
+        char_data.add(new BarEntry(1, total_saving_value));
+
+        BarDataSet dataSet = new BarDataSet(char_data, "Label"); // add entries to dataset
+        dataSet.setColors(new int[]{R.color.green, R.color.red, R.color.light_gray}, getContext());
+        dataSet.setDrawValues(false);
+
+        BarData bar_data = new BarData(dataSet);
+
+        HorizontalBarChart chart = (HorizontalBarChart) view.findViewById(R.id.chart);
+        chart.animateY(1300);
+        chart.setData(bar_data);
+        chart.getDescription().setEnabled(false);
+        chart.getAxisLeft().setTextColor(Color.GRAY);
+        chart.getAxisRight().setDrawLabels(false);
+        chart.getXAxis().setDrawLabels(false);
+        chart.getLegend().setEnabled(false);
+        chart.setTouchEnabled(false);
+        chart.invalidate(); // refresh
 
         return view;
     }

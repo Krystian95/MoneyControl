@@ -171,7 +171,7 @@ public class TodayDetailsFragment extends Fragment {
             }
         }
 
-        gridTodayEntries = (GridView) view.findViewById(R.id.gridViewTodayEntriesPaid);
+        gridTodayEntries = (GridView) view.findViewById(R.id.gridViewBalanceDaily);
 
         layoutParams = gridTodayEntries.getLayoutParams();
         layoutParams.height = getGridViewSuitedHeight(today_entries_id.size());
