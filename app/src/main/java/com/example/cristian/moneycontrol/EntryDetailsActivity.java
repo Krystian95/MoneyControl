@@ -21,7 +21,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -114,7 +113,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         String entry_type = "";
 
         if (intent != null) {
-
             db = AppDatabase.getAppDatabase(getApplicationContext());
 
             if (intent.hasExtra("category_id")) {
@@ -480,8 +478,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                     AppDatabase.updateEntry(db, entry);
                     new_entry_insered = entry.getIdEntry();
                 }
-
-                Log.e("DATABASE", entry.toString());
 
                 setupIdEntryToPhotos(String.valueOf(new_entry_insered));
 

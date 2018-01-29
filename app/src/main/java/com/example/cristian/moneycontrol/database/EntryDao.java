@@ -16,7 +16,7 @@ public interface EntryDao {
     @Update
     public void update(Entry entry);
 
-    @Query("SELECT * FROM entry WHERE recurrenceRule<>'null'")
+    @Query("SELECT * FROM entry WHERE recurrenceRule<>'null' ORDER BY dateTime")
     public Entry[] getAllWithRrule();
 
     @Query("DELETE FROM entry")
@@ -34,7 +34,7 @@ public interface EntryDao {
     @Delete
     void delete(Entry entry);
 
-    @Query("SELECT * FROM entry")
+    @Query("SELECT * FROM entry ORDER BY dateTime")
     public Entry[] getAll();
 
 }

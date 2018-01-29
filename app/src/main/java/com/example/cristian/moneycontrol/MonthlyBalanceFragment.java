@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.example.cristian.moneycontrol.database.AppDatabase;
 import com.example.cristian.moneycontrol.database.Category;
@@ -18,17 +19,20 @@ import com.example.cristian.moneycontrol.database.Entry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class YearlyBalanceFragment extends Fragment {
+public class MonthlyBalanceFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_CURRENT_YEAR = "currentYear";
+
+    private String currentYear;
 
     GridView grid;
-    List<String> years;
+    List<String> months;
+    List<Float> months_income;
+    List<Float> months_expense;
 
     private OnFragmentInteractionListener mListener;
 
-    public YearlyBalanceFragment() {
+    public MonthlyBalanceFragment() {
         // Required empty public constructor
     }
 
@@ -36,57 +40,90 @@ public class YearlyBalanceFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment YearlyBalanceFragment.
+     * @param currentYear Parameter 1.
+     * @return A new instance of fragment MonthlyBalanceFragment.
      */
-    public static YearlyBalanceFragment newInstance() {
-        YearlyBalanceFragment fragment = new YearlyBalanceFragment();
+    public static MonthlyBalanceFragment newInstance(String currentYear) {
+        MonthlyBalanceFragment fragment = new MonthlyBalanceFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_CURRENT_YEAR, currentYear);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            currentYear = getArguments().getString(ARG_CURRENT_YEAR);
+        }
+    }
+
+    private void setupArrays() {
+
+        this.months = new ArrayList<>();
+        this.months_income = new ArrayList<>();
+        this.months_expense = new ArrayList<>();
+
+        months.add("Gen");
+        months.add("Feb");
+        months.add("Mar");
+        months.add("Apr");
+        months.add("Mag");
+        months.add("Giu");
+        months.add("Lug");
+        months.add("Ago");
+        months.add("Set");
+        months.add("Ott");
+        months.add("Nov");
+        months.add("Dic");
+
+        for (int i = 0; i < this.months.size(); i++) {
+            this.months_income.add((float) 0);
+            this.months_expense.add((float) 0);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_yearly_balance, container, false);
+        View view = inflater.inflate(R.layout.fragment_monthly_balance, container, false);
 
         CustomCalendar calendar = new CustomCalendar();
 
         AppDatabase db = AppDatabase.getAppDatabase(this.getContext());
         Entry[] entries = AppDatabase.getAllEntries(db);
 
-        years = new ArrayList<>();
-        List<Float> years_income = new ArrayList<>();
-        List<Float> years_expense = new ArrayList<>();
+        if (this.currentYear == null) {
+            this.currentYear = calendar.getCurrentYear();
+        }
+
+        setupArrays();
 
         for (int i = 0; i < entries.length; i++) {
+
             String year = calendar.getYearFromDate(entries[i].getDate());
-            if (!years.contains(year)) {
-                years.add(year);
-                years_income.add((float) 0);
-                years_expense.add((float) 0);
-            }
 
-            int index = years.indexOf(year);
-            Category category = AppDatabase.getCategoryById(db, String.valueOf(entries[i].getIdCategory()));
+            if (year.equals(this.currentYear)) {
+                int month = calendar.getMonthFromDate(entries[i].getDate());
+                month--;
+                Category category = AppDatabase.getCategoryById(db, String.valueOf(entries[i].getIdCategory()));
 
-            if (category.getType().equals("expense")) {
-                float expense = years_expense.get(index);
-                expense += entries[i].getAmount();
-                years_expense.set(index, expense);
-            } else {
-                float income = years_income.get(index);
-                income += entries[i].getAmount();
-                years_income.set(index, income);
+                if (category.getType().equals("expense")) {
+                    float expense = months_expense.get(month);
+                    expense += entries[i].getAmount();
+                    months_expense.set(month, expense);
+                } else {
+                    float income = months_income.get(month);
+                    income += entries[i].getAmount();
+                    months_income.set(month, income);
+                }
             }
         }
 
-        BalanceGrid adapter = new BalanceGrid(view.getContext(), years, years_income, years_expense);
-        grid = (GridView) view.findViewById(R.id.gridViewBalanceYearly);
+        BalanceGrid adapter = new BalanceGrid(view.getContext(), months, months_income, months_expense);
+        grid = (GridView) view.findViewById(R.id.gridViewBalanceMonth);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -95,18 +132,16 @@ public class YearlyBalanceFragment extends Fragment {
                                     int position, long id) {
                 Intent intent = new Intent(view.getContext(), MainActivity.class);
                 intent.putExtra("balance", true);
-                intent.putExtra("balance_monthly", years.get(position));
+                intent.putExtra("balance_daily", position + 1);
+                intent.putExtra("year", currentYear);
                 startActivity(intent);
             }
         });
 
-        return view;
-    }
+        TextView title = (TextView) view.findViewById(R.id.year_current);
+        title.setText(this.currentYear);
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        return view;
     }
 
     @Override

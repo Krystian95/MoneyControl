@@ -1,24 +1,64 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout5"
+    android:id="@+id/frameLayoutYearly"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.cristian.moneycontrol.YearlyBalanceFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/textView"
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/total_entry_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/entrate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/amount_example"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/total_entry_label" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/EUR"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            tools:layout_editor_absoluteY="43dp" />
+    </android.support.constraint.ConstraintLayout>
+
+    <GridView
+        android:id="@+id/gridViewBalanceYearly"
         android:layout_width="0dp"
-        android:layout_height="39dp"
-        android:text="BALANCE YEARLY"
-        android:textAlignment="center"
-        android:textSize="20dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:columnWidth="50dp"
+        android:gravity="center"
+        android:numColumns="1"
+        android:stretchMode="columnWidth"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.457" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
 </android.support.constraint.ConstraintLayout>

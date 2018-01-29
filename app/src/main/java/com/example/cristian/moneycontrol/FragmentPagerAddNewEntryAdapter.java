@@ -16,13 +16,9 @@ public class FragmentPagerAddNewEntryAdapter extends FragmentPagerAdapter {
             "Entrata",
             "Spesa"
     };
-    private Context context;
-    private FragmentManager fm;
 
     public FragmentPagerAddNewEntryAdapter(FragmentManager fm, Context context) {
         super(fm);
-        this.fm = fm;
-        this.context = context;
     }
 
     @Override

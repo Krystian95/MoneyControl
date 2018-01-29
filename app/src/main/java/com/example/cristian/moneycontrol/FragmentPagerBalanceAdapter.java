@@ -1,6 +1,5 @@
 package com.example.cristian.moneycontrol;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,16 +10,20 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class FragmentPagerBalanceAdapter extends FragmentPagerAdapter {
 
-    final int PAGE_COUNT = 4;
+    final int PAGE_COUNT = 3;
     private String tabTitles[] = new String[]{
             "Giorno",
-            "Settimana",
             "Mese",
             "Anno"
     };
 
-    public FragmentPagerBalanceAdapter(FragmentManager fm) {
+    private String year;
+    private String month;
+
+    public FragmentPagerBalanceAdapter(FragmentManager fm, String year, String month) {
         super(fm);
+        this.year = year;
+        this.month = month;
     }
 
     @Override
@@ -33,16 +36,13 @@ public class FragmentPagerBalanceAdapter extends FragmentPagerAdapter {
 
         switch (position) {
             case 0: // Daily
-                return YearlyBalanceFragment.newInstance("?", "?");
+                return DailyBalanceFragment.newInstance(year, month);
 
-            case 1: // Weekly
-                return YearlyBalanceFragment.newInstance("?", "?");
+            case 1: // Monthly
+                return MonthlyBalanceFragment.newInstance(year);
 
-            case 2: // Monthly
-                return YearlyBalanceFragment.newInstance("?", "?");
-
-            case 3: // Yearly
-                return YearlyBalanceFragment.newInstance("?", "?");
+            case 2: // Yearly
+                return YearlyBalanceFragment.newInstance();
         }
 
         return null;

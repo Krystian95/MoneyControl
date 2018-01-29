@@ -2,12 +2,10 @@ package com.example.cristian.moneycontrol.database;
 
 import android.arch.persistence.room.TypeConverter;
 import android.net.ParseException;
-import android.text.format.DateFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
 class DateConverter {

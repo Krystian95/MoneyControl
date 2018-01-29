@@ -4,7 +4,6 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
-import android.util.Log;
 
 import com.example.cristian.moneycontrol.R;
 
@@ -33,10 +32,6 @@ public abstract class AppDatabase extends RoomDatabase {
                             .build();
         }
         return INSTANCE;
-    }
-
-    public static void destroyInstance() {
-        INSTANCE = null;
     }
 
     public static void insertCategory(final AppDatabase db, Category category) {
@@ -116,30 +111,6 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static void updateIdEntryByAbsolutePath(final AppDatabase db, String absolute_path, String id_entry) {
         db.photoDao().updateIdEntryByAbsolutePath(absolute_path, id_entry);
-    }
-
-    public static void deleteAllCategories(final AppDatabase db) {
-        db.categoryDao().deleteAll();
-    }
-
-    public static void deleteAllEntries(final AppDatabase db) {
-        db.entryDao().deleteAll();
-    }
-
-    public static void printAllPhotos(final AppDatabase db) {
-        Photo[] photos = db.photoDao().getAll();
-
-        for (Photo photo : photos) {
-            Log.e("DATABASE", photo.toString());
-        }
-    }
-
-    public static void printAllEntries(final AppDatabase db) {
-        Entry[] entries = db.entryDao().getAll();
-
-        for (Entry entry : entries) {
-            Log.e("DATABASE", entry.toString());
-        }
     }
 
     public static void setupDefaultCategories(AppDatabase db) {

@@ -12,26 +12,17 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link BalanceDetailsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link BalanceDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BalanceDetailsFragment extends Fragment implements
         FragmentPagerBalanceAdapter.OnFragmentInteractionListener,
-        YearlyBalanceFragment.OnFragmentInteractionListener{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+        YearlyBalanceFragment.OnFragmentInteractionListener {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String ARG_TYPE = "type";
+    private static final String ARG_YEAR = "year";
+    private static final String ARG_MONTH = "month";
+
+    private String type;
+    private String year;
+    private String month;
 
     private OnFragmentInteractionListener mListener;
 
@@ -43,16 +34,16 @@ public class BalanceDetailsFragment extends Fragment implements
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param type Parameter 1.
+     * @param year Parameter 2.
      * @return A new instance of fragment BalanceDetailsFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static BalanceDetailsFragment newInstance(String param1, String param2) {
+    public static BalanceDetailsFragment newInstance(String type, String year, String month) {
         BalanceDetailsFragment fragment = new BalanceDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_TYPE, type);
+        args.putString(ARG_YEAR, year);
+        args.putString(ARG_MONTH, month);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,8 +53,9 @@ public class BalanceDetailsFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            type = getArguments().getString(ARG_TYPE);
+            year = getArguments().getString(ARG_YEAR);
+            month = getArguments().getString(ARG_MONTH);
         }
     }
 
@@ -76,23 +68,33 @@ public class BalanceDetailsFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_balance_details, container, false);
 
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager_balance);
-        viewPager.setAdapter(new FragmentPagerBalanceAdapter(this.getFragmentManager()));
+        viewPager.setAdapter(new FragmentPagerBalanceAdapter(this.getFragmentManager(), year, month));
 
-        // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.sliding_tabs_balance);
         tabLayout.setupWithViewPager(viewPager);
 
-        viewPager.setCurrentItem(2);
+        int current = 1;
+
+        if (this.type != null) {
+            switch (this.type) {
+                case "daily":
+                    current = 0;
+                    break;
+                case "monthly":
+                    current = 1;
+                    break;
+            }
+        }
+
+        viewPager.setCurrentItem(current);
 
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -132,7 +134,6 @@ public class BalanceDetailsFragment extends Fragment implements
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

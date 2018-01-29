@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -104,7 +103,7 @@ public class TodayDetailsFragment extends Fragment {
         /* Today date informations */
 
         CustomCalendar calendar = new CustomCalendar();
-        Map date = calendar.getDateTime();
+        Map date = calendar.getCurrentDateTime();
 
         TextView today_number = (TextView) view.findViewById(R.id.today_number);
         TextView today_letter = (TextView) view.findViewById(R.id.today_letter);
@@ -192,9 +191,9 @@ public class TodayDetailsFragment extends Fragment {
         });
 
         TextView total_expense_text = (TextView) view.findViewById(R.id.total_expense);
-        total_expense_text.setText((String.valueOf(total_expense)));
+        total_expense_text.setText(String.format("%.2f", total_expense));
         TextView total_income_text = (TextView) view.findViewById(R.id.total_income);
-        total_income_text.setText((String.valueOf(total_income)));
+        total_income_text.setText(String.format("%.2f", total_income));
 
         return view;
 

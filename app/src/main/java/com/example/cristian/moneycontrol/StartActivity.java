@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.example.cristian.moneycontrol.database.AppDatabase;
 import com.example.cristian.moneycontrol.database.Category;
@@ -26,54 +25,6 @@ public class StartActivity extends AppCompatActivity {
             protected Integer doInBackground(Void... params) {
 
                 AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
-
-                //AppDatabase.deleteAllEntries(db);
-                //AppDatabase.deleteAllCategories(db);
-
-                /*Category category = new Category();
-                category.setName("Giardinaggio");
-                AppDatabase.insertCategory(db, category);
-
-                Category[] categories = AppDatabase.getAllCategories(db);
-
-                Log.e("DATABASE", "Categories Count: " + categories.length);
-
-                for (Category category_temp : categories) {
-                    Log.e("DATABASE", category_temp.toString());
-                }
-
-                Entry entry = new Entry();
-                entry.setAddress("Via Martiri di Villamarzana 6, Occhiobello, RO, 45030 Italy");
-                entry.setAmount((float) 50.12);
-
-                SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
-                Date myDate = new Date();
-                String today_string = format.format(myDate);
-
-                entry.setDateTime(today_string);
-
-                entry.setDescription("Lore impus domini");
-                entry.setRecurrenceRule("rRule");
-                entry.setIdCategory(1);
-
-                AppDatabase.insertEntry(db, entry);
-
-                Entry[] entries = AppDatabase.getTodayEntries(db);
-
-                Log.e("DATABASE", "Entries Count: " + entries.length);
-
-                for (Entry entry_temp : entries) {
-                    Log.e("DATABASE", entry_temp.toString());
-                }*/
-
-                /*
-                categories = AppDatabase.getAllCategories(db);
-
-                Log.e("DATABASE", "Category Count: " + categories.length);
-
-                for (Category category_temp : categories) {
-                    Log.e("DATABASE", category_temp.toString());
-                }*/
 
                 Category[] categories = AppDatabase.getAllCategories(db);
 

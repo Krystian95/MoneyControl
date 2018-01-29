@@ -57,11 +57,11 @@ public class EntriesGrid extends BaseAdapter {
 
         grid = new View(mContext);
         grid = inflater.inflate(R.layout.grid_element_entry, null);
-        TextView eur = (TextView) grid.findViewById(R.id.eur);
+        TextView eur = (TextView) grid.findViewById(R.id.total_expense_eur);
         TextView category_name = (TextView) grid.findViewById(R.id.category_name);
         category_name.setText(category.getName());
-        TextView entry_amount = (TextView) grid.findViewById(R.id.entry_amount);
-        entry_amount.setText(String.valueOf(entry.getAmount()));
+        TextView entry_amount = (TextView) grid.findViewById(R.id.total_expense);
+        entry_amount.setText(String.format("%.2f", entry.getAmount()));
         ImageView imageView = (ImageView) grid.findViewById(R.id.category_image);
         imageView.setImageResource(category.getIcon());
 

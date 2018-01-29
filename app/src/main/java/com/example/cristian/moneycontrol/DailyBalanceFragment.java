@@ -1,0 +1,182 @@
+package com.example.cristian.moneycontrol;
+
+import android.content.Context;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.TextView;
+
+import com.example.cristian.moneycontrol.database.AppDatabase;
+import com.example.cristian.moneycontrol.database.Category;
+import com.example.cristian.moneycontrol.database.Entry;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DailyBalanceFragment extends Fragment {
+
+    private static final String ARG_YEAR = "year";
+    private static final String ARG_MONTH = "month";
+
+    private String year;
+    private String month;
+
+    private OnFragmentInteractionListener mListener;
+
+    GridView grid;
+    List<String> days;
+    List<Float> days_income;
+    List<Float> days_expense;
+
+    public DailyBalanceFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param year  Parameter 1.
+     * @param month Parameter 2.
+     * @return A new instance of fragment DailyBalanceFragment.
+     */
+    public static DailyBalanceFragment newInstance(String year, String month) {
+        DailyBalanceFragment fragment = new DailyBalanceFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_YEAR, year);
+        args.putString(ARG_MONTH, month);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            year = getArguments().getString(ARG_YEAR);
+            month = getArguments().getString(ARG_MONTH);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_daily_balance, container, false);
+
+        CustomCalendar calendar = new CustomCalendar();
+
+        AppDatabase db = AppDatabase.getAppDatabase(this.getContext());
+        Entry[] entries = AppDatabase.getAllEntries(db);
+
+        if (this.year == null || this.month == null) {
+            this.year = calendar.getCurrentYear();
+            this.month = calendar.getCurrentMonth();
+        } else if (Integer.valueOf(this.month) < 10) {
+            this.month = "0" + this.month;
+        }
+
+        setupArrays();
+
+        for (int i = 0; i < entries.length; i++) {
+
+            String year = calendar.getYearFromDate(entries[i].getDate());
+            int month = calendar.getMonthFromDate(entries[i].getDate());
+
+            if (year.equals(this.year) && Integer.valueOf(this.month) == month) {
+
+                int day = calendar.getDayFromDate(entries[i].getDate());
+                day--;
+
+                Category category = AppDatabase.getCategoryById(db, String.valueOf(entries[i].getIdCategory()));
+
+                if (category.getType().equals("expense")) {
+                    float expense = days_expense.get(day);
+                    expense += entries[i].getAmount();
+                    days_expense.set(day, expense);
+                } else {
+                    float income = days_income.get(day);
+                    income += entries[i].getAmount();
+                    days_income.set(day, income);
+                }
+            }
+        }
+
+        BalanceGrid adapter = new BalanceGrid(view.getContext(), days, days_income, days_expense);
+        grid = (GridView) view.findViewById(R.id.gridViewBalanceDaily);
+        grid.setAdapter(adapter);
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                //TODO start intent
+            }
+        });
+
+        TextView title = (TextView) view.findViewById(R.id.month_year_current);
+        String title_text = calendar.getMonthByNumber(Integer.parseInt(this.month)) + " " + this.year;
+        title.setText(title_text);
+
+        return view;
+    }
+
+    private void setupArrays() {
+
+        this.days = new ArrayList<>();
+        this.days_income = new ArrayList<>();
+        this.days_expense = new ArrayList<>();
+
+        CustomCalendar calendar = new CustomCalendar();
+        int limit = calendar.getMonthLimit(this.month);
+
+        for (int i = 1; i <= limit; i++) {
+            days.add(String.valueOf(i));
+            this.days_income.add((float) 0);
+            this.days_expense.add((float) 0);
+        }
+    }
+
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
+}

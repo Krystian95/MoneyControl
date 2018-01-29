@@ -1,7 +1,5 @@
 package com.example.cristian.moneycontrol;
 
-import android.util.Log;
-
 import org.dmfs.rfc5545.DateTime;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
 import org.dmfs.rfc5545.recur.RecurrenceRule;
@@ -22,7 +20,7 @@ import java.util.Map;
 
 public class CustomCalendar {
 
-    public Map getDateTime() {
+    public Map getCurrentDateTime() {
 
         DateFormat dateFormatDayNumber = new SimpleDateFormat("d");
         DateFormat dateFormatDayLetter = new SimpleDateFormat("EEEE");
@@ -40,6 +38,18 @@ public class CustomCalendar {
         date.put("month_year", text);
 
         return date;
+    }
+
+    public String getCurrentYear() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy");
+        Date todayDate = new Date();
+        return dateFormat.format(todayDate);
+    }
+
+    public String getCurrentMonth() {
+        DateFormat dateFormat = new SimpleDateFormat("MM");
+        Date todayDate = new Date();
+        return dateFormat.format(todayDate);
     }
 
     /*
@@ -130,5 +140,64 @@ public class CustomCalendar {
         Date todayDate = new Date();
 
         return format.format(todayDate);
+    }
+
+    public String getYearFromDate(String date) {
+        String[] splitted = date.split("/");
+        return splitted[2];
+    }
+
+    public int getMonthFromDate(String date) {
+        String[] splitted = date.split("/");
+        return Integer.parseInt(splitted[1]);
+    }
+
+    public int getDayFromDate(String date) {
+        String[] splitted = date.split("/");
+        return Integer.parseInt(splitted[0]);
+    }
+
+    public String getMonthByNumber(int number) {
+
+        switch (number) {
+            case 1:
+                return "Gennaio";
+            case 2:
+                return "Febbraio";
+            case 3:
+                return "Marzo";
+            case 4:
+                return "Aprile";
+            case 5:
+                return "Maggio";
+            case 6:
+                return "Giugno";
+            case 7:
+                return "Luglio";
+            case 8:
+                return "Agosto";
+            case 9:
+                return "Settembre";
+            case 10:
+                return "Ottobre";
+            case 11:
+                return "Novembre";
+            case 12:
+                return "Dicembre";
+        }
+
+        return "";
+    }
+
+    public int getMonthLimit(String month) {
+
+        if (month.equals("11") || month.equals("04") || month.equals("06") || month.equals("09")) {
+            return 30;
+        } else if (month.equals("02")) {
+            return 28;
+        } else {
+            return 31;
+        }
+
     }
 }

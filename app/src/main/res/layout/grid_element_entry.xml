@@ -1,6 +1,5 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -16,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_account_balance_black_24dp"></ImageView>
+        app:srcCompat="@drawable/ic_icons8_carosello" android:contentDescription="@string/content_description"></ImageView>
 
     <TextView
         android:id="@+id/category_name"
@@ -31,24 +30,24 @@
         app:layout_constraintTop_toTopOf="parent"></TextView>
 
     <TextView
-        android:id="@+id/entry_amount"
+        android:id="@+id/total_expense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:layout_marginTop="20dp"
-        android:text="50.25"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/eur"
+        android:layout_marginTop="21dp"
+        android:text="@string/amount_example"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toStartOf="@+id/total_expense_eur"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/eur"
+        android:id="@+id/total_expense_eur"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="21dp"
         android:text="@string/EUR"
-        android:textStyle="bold"
+        android:textColor="@color/red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
