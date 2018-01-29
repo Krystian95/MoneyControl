@@ -31,6 +31,9 @@ public interface EntryDao {
     @Query("SELECT * FROM entry WHERE dateTime >= Datetime(:from) AND dateTime <= Datetime(:to) AND recurrenceRule='null' ORDER BY dateTime")
     public Entry[] getEntriesByDateRange(String from, String to);
 
+    @Query("SELECT * FROM entry WHERE dateTime >= Datetime(:from) AND dateTime <= Datetime(:to) ORDER BY dateTime")
+    public Entry[] getEntriesByDateRangeWithRecurrences(String from, String to);
+
     @Delete
     void delete(Entry entry);
 

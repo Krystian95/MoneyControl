@@ -101,6 +101,12 @@ public abstract class AppDatabase extends RoomDatabase {
         return db.photoDao().getAllUnlinked();
     }
 
+    public static Entry[] getEntriesByDate(final AppDatabase db, String date) {
+        String from_date = date + " 00:00:00";
+        String to_date = date + " 23:59:59";
+        return db.entryDao().getEntriesByDateRangeWithRecurrences(from_date, to_date);
+    }
+
     public static void deletePhotoByAbsolutePath(final AppDatabase db, String absolute_path) {
         db.photoDao().deletePhotoByAbsolutePath(absolute_path);
     }

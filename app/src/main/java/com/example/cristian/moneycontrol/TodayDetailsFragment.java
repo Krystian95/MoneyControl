@@ -191,9 +191,9 @@ public class TodayDetailsFragment extends Fragment {
         });
 
         TextView total_expense_text = (TextView) view.findViewById(R.id.total_expense);
-        total_expense_text.setText(String.format("%.2f", total_expense));
+        total_expense_text.setText(Utils.formatNumber(total_expense));
         TextView total_income_text = (TextView) view.findViewById(R.id.total_income);
-        total_income_text.setText(String.format("%.2f", total_income));
+        total_income_text.setText(Utils.formatNumber(total_income));
 
         return view;
 

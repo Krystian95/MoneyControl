@@ -61,7 +61,7 @@ public class EntriesGrid extends BaseAdapter {
         TextView category_name = (TextView) grid.findViewById(R.id.category_name);
         category_name.setText(category.getName());
         TextView entry_amount = (TextView) grid.findViewById(R.id.total_expense);
-        entry_amount.setText(String.format("%.2f", entry.getAmount()));
+        entry_amount.setText(Utils.formatNumber(entry.getAmount()));
         ImageView imageView = (ImageView) grid.findViewById(R.id.category_image);
         imageView.setImageResource(category.getIcon());
 

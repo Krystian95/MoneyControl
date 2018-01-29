@@ -41,7 +41,13 @@ public class CustomCalendar {
     }
 
     public String getCurrentYear() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("YYYY");
+        Date todayDate = new Date();
+        return dateFormat.format(todayDate);
+    }
+
+    public String getCurrentDay() {
+        DateFormat dateFormat = new SimpleDateFormat("DD");
         Date todayDate = new Date();
         return dateFormat.format(todayDate);
     }

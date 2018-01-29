@@ -1,10 +1,10 @@
 package com.example.cristian.moneycontrol;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +16,12 @@ import com.example.cristian.moneycontrol.database.AppDatabase;
 import com.example.cristian.moneycontrol.database.Category;
 import com.example.cristian.moneycontrol.database.Entry;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 public class DailyBalanceFragment extends Fragment {
 
@@ -116,13 +120,36 @@ public class DailyBalanceFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                //TODO start intent
+                Intent intent = new Intent(view.getContext(), SingleDayActivity.class);
+                intent.putExtra("day", position + 1);
+                intent.putExtra("month", month);
+                intent.putExtra("year", year);
+                startActivity(intent);
             }
         });
 
         TextView title = (TextView) view.findViewById(R.id.month_year_current);
         String title_text = calendar.getMonthByNumber(Integer.parseInt(this.month)) + " " + this.year;
         title.setText(title_text);
+
+        float total_income_value = 0;
+        for (int i = 0; i < days_income.size(); i++) {
+            total_income_value += days_income.get(i);
+        }
+
+        float total_expense_value = 0;
+        for (int i = 0; i < days_expense.size(); i++) {
+            total_expense_value += days_expense.get(i);
+        }
+
+        float total_saving_value = total_income_value - total_expense_value;
+
+        TextView total_income = (TextView) view.findViewById(R.id.total_income);
+        total_income.setText(Utils.formatNumber(total_income_value));
+        TextView total_expense = (TextView) view.findViewById(R.id.total_expense);
+        total_expense.setText(Utils.formatNumber(total_expense_value));
+        TextView total_saving = (TextView) view.findViewById(R.id.total_saving);
+        total_saving.setText(Utils.formatNumber(total_saving_value));
 
         return view;
     }

@@ -57,9 +57,14 @@
     <string name="number_500">500</string>
     <string name="number_200">200</string>
     <string name="future">Previste</string>
-    <string name="amount_example">50.25</string>
+    <string name="amount_example">50,25</string>
     <string name="content_description">image</string>
     <string name="example_year">2018</string>
     <string name="example_month_year_balance">Giu 2018</string>
     <string name="entrate">Entrate</string>
+    <string name="spese">Spese</string>
+    <string name="risparmio">Risparmio</string>
+    <string name="totale">Totale</string>
+    <string name="example_month">Gennaio</string>
+    <string name="ricerca_giorno">Ricerca Giorno</string>
 </resources>

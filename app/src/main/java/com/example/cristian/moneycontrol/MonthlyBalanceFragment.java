@@ -141,6 +141,25 @@ public class MonthlyBalanceFragment extends Fragment {
         TextView title = (TextView) view.findViewById(R.id.year_current);
         title.setText(this.currentYear);
 
+        float total_income_value = 0;
+        for (int i = 0; i < months_income.size(); i++) {
+            total_income_value += months_income.get(i);
+        }
+
+        float total_expense_value = 0;
+        for (int i = 0; i < months_expense.size(); i++) {
+            total_expense_value += months_expense.get(i);
+        }
+
+        float total_saving_value = total_income_value - total_expense_value;
+
+        TextView total_income = (TextView) view.findViewById(R.id.total_income);
+        total_income.setText(Utils.formatNumber(total_income_value));
+        TextView total_expense = (TextView) view.findViewById(R.id.total_expense);
+        total_expense.setText(Utils.formatNumber(total_expense_value));
+        TextView total_saving = (TextView) view.findViewById(R.id.total_saving);
+        total_saving.setText(Utils.formatNumber(total_saving_value));
+
         return view;
     }
 

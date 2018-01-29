@@ -56,10 +56,10 @@ public class BalanceGrid extends BaseAdapter {
         year.setText(this.years.get(position));
 
         TextView year_income = (TextView) grid.findViewById(R.id.total_income);
-        year_income.setText(String.format("%.2f", this.years_income.get(position)));
+        year_income.setText(Utils.formatNumber(this.years_income.get(position)));
 
         TextView year_expense = (TextView) grid.findViewById(R.id.total_expense);
-        year_expense.setText(String.format("%.2f",this.years_expense.get(position)));
+        year_expense.setText(Utils.formatNumber(this.years_expense.get(position)));
 
         return grid;
     }
