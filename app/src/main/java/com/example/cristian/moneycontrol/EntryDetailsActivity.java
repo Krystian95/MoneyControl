@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -65,6 +66,8 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
     private static final int PERMISSION_REQUEST_CAMERA = 1;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 2;
+    private static final int PERMISSION_REQUEST_LOCATION = 34;
+    private static final int PERMISSION_REQUEST_GPS_SETTINGS = 56;
 
     private ArrayList<String> photos_indexed = new ArrayList<>();
     private String lastPhotoAbsolutePath;
@@ -166,6 +169,8 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                 switch_repeat.setChecked(true);
             }
         }
+
+        layout_main = findViewById(R.id.layout_add_new_entry_details);
 
         delete_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -385,6 +390,16 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                 }
         );
 
+        address.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                    startLocationAction();
+                }
+                return false;
+            }
+        });
+
         address.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -395,8 +410,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         });
 
         /* photo */
-
-        layout_main = findViewById(R.id.layout_add_new_entry_details);
 
         setupExistingPhotos();
 
@@ -489,6 +502,100 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         });
     }
 
+    private void startLocationAction() {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            getLocation();
+        } else {
+            requestLocationPermission();
+        }
+
+    }
+
+    private void getLocation() {
+
+        GPSTracker gpsTracker = new GPSTracker(EntryDetailsActivity.this);
+
+        if (gpsTracker.canGetLocation()) {
+            double lat = gpsTracker.latitude;
+            double lon = gpsTracker.longitude;
+
+            if (lat != 0 && lon != 0) {
+                String addressLine = gpsTracker.getAddressLine(this);
+                address.setText(addressLine);
+            }
+        } else {
+            buildAlertMessageNoGps();
+        }
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.gps_disabled)
+                .setCancelable(false)
+                .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS),
+                                PERMISSION_REQUEST_GPS_SETTINGS);
+                    }
+                })
+                .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void requestPermissions() {
+        boolean shouldProvideRationale =
+                ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        // Provide an additional rationale to the user. This would happen if the user denied the
+        // request previously, but didn't check the "Don't ask again" checkbox.
+        if (shouldProvideRationale) {
+
+            showSnackbar(R.string.Income, android.R.string.ok,
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Request permission
+                            startLocationPermissionRequest();
+                        }
+                    });
+
+        } else {
+            // Request permission. It's possible this can be auto answered if device policy
+            // sets the permission in a given state or the user denied the permission
+            // previously and checked "Never ask again".
+            startLocationPermissionRequest();
+        }
+    }
+
+    private void startLocationPermissionRequest() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                PERMISSION_REQUEST_LOCATION);
+    }
+
+    /**
+     * Shows a {@link Snackbar}.
+     *
+     * @param mainTextStringId The id for the string resource for the Snackbar text.
+     * @param actionStringId   The text of the action item.
+     * @param listener         The listener associated with the Snackbar action.
+     */
+    private void showSnackbar(final int mainTextStringId, final int actionStringId,
+                              View.OnClickListener listener) {
+        Snackbar.make(findViewById(android.R.id.content),
+                getString(mainTextStringId),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(actionStringId), listener).show();
+    }
+
     /*
     Set the entry id of all photos with id entry "null" with the correct id entry (last insered)
      */
@@ -526,6 +633,15 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                         Snackbar.LENGTH_SHORT)
                         .show();
             }
+        } else if (requestCode == PERMISSION_REQUEST_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLocation();
+            } else {
+                // Permission request was denied.
+                Snackbar.make(layout_main, R.string.permissions_location_denied,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+            }
         }
     }
 
@@ -539,6 +655,32 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             startCamera();
         } else {
             requestCameraPermission();
+        }
+    }
+
+    /*
+    Request the camera permission
+     */
+    private void requestLocationPermission() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+            Snackbar.make(layout_main, R.string.permission_location_required,
+                    Snackbar.LENGTH_INDEFINITE).setAction(R.string.Ok, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    ActivityCompat.requestPermissions(EntryDetailsActivity.this,
+                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            PERMISSION_REQUEST_LOCATION);
+                }
+            }).show();
+
+        } else {
+            // Request the permission. The result will be received in onRequestPermissionResult().
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSION_REQUEST_LOCATION);
         }
     }
 
@@ -557,13 +699,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         }
 
         return photos;
-    }
-
-    /*
-    Count the occurrences of a Char in a String
-     */
-    public static int count(String s, char c) {
-        return s.length() == 0 ? 0 : (s.charAt(0) == c ? 1 : 0) + count(s.substring(1), c);
     }
 
     /*

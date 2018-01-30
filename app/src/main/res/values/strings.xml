@@ -67,4 +67,8 @@
     <string name="totale">Totale</string>
     <string name="example_month">Gennaio</string>
     <string name="ricerca_giorno">Ricerca Giorno</string>
+    <string name="settings">settings</string>
+    <string name="permission_location_required">L\'applicazione ha bisogno dell\'accesso alla posizione.</string>
+    <string name="permissions_location_denied">Hai negato l\'accesso alla posizione.</string>
+    <string name="gps_disabled">Il tuo GPS sembra essere disattivato, vuoi attivarlo?</string>
 </resources>
