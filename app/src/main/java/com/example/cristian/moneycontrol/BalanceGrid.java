@@ -19,6 +19,7 @@ public class BalanceGrid extends BaseAdapter {
     private String current_day;
     private String current_month;
     private String current_year;
+    private CustomCalendar calendar;
 
     public BalanceGrid(Context c, String type, List<String> fields, List<Float> incomes, List<Float> expenses) {
         mContext = c;
@@ -27,7 +28,7 @@ public class BalanceGrid extends BaseAdapter {
         this.expenses = expenses;
         this.type = type;
 
-        CustomCalendar calendar = new CustomCalendar();
+        calendar = new CustomCalendar();
         this.current_day = calendar.getCurrentDay();
         this.current_month = calendar.getCurrentMonth();
         this.current_year = calendar.getCurrentYear();
@@ -63,9 +64,19 @@ public class BalanceGrid extends BaseAdapter {
 
         String printed = this.fields.get(position);
 
-        switch (this.type){
+        switch (this.type) {
             case "day":
-                if(printed.equals(this.current_day)){
+                if (printed.equals(this.current_day)) {
+                    field.setBackgroundColor(mContext.getResources().getColor(R.color.orange));
+                }
+                break;
+            case "month":
+                if (printed.equals(calendar.getMonthAbbreviationByNumber(this.current_month))) {
+                    field.setBackgroundColor(mContext.getResources().getColor(R.color.orange));
+                }
+                break;
+            case "year":
+                if (printed.equals(this.current_year)) {
                     field.setBackgroundColor(mContext.getResources().getColor(R.color.orange));
                 }
                 break;

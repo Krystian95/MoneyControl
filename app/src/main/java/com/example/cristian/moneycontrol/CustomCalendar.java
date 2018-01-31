@@ -8,10 +8,8 @@ import org.dmfs.rfc5545.recur.RecurrenceRuleIterator;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class CustomCalendar {
@@ -209,6 +207,41 @@ public class CustomCalendar {
                 return "Novembre";
             case 12:
                 return "Dicembre";
+        }
+
+        return "";
+    }
+
+    /*
+    Returns the month abbreviation name by its number (1-12)
+     */
+    public String getMonthAbbreviationByNumber(String number) {
+
+        switch (Integer.valueOf(number)) {
+            case 1:
+                return "Gen";
+            case 2:
+                return "Feb";
+            case 3:
+                return "Mar";
+            case 4:
+                return "Apr";
+            case 5:
+                return "Mag";
+            case 6:
+                return "Giu";
+            case 7:
+                return "Lug";
+            case 8:
+                return "Ago";
+            case 9:
+                return "Set";
+            case 10:
+                return "Ott";
+            case 11:
+                return "Nov";
+            case 12:
+                return "Dic";
         }
 
         return "";
