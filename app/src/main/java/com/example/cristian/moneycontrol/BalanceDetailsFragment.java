@@ -34,8 +34,9 @@ public class BalanceDetailsFragment extends Fragment implements
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param type Parameter 1.
-     * @param year Parameter 2.
+     * @param type
+     * @param year
+     * @param month
      * @return A new instance of fragment BalanceDetailsFragment.
      */
     public static BalanceDetailsFragment newInstance(String type, String year, String month) {
@@ -93,12 +94,6 @@ public class BalanceDetailsFragment extends Fragment implements
         viewPager.setCurrentItem(current);
 
         return view;
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override

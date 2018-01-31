@@ -127,7 +127,7 @@ public class MonthlyBalanceFragment extends Fragment {
             }
         }
 
-        BalanceGrid adapter = new BalanceGrid(view.getContext(), months, months_income, months_expense);
+        BalanceGrid adapter = new BalanceGrid(view.getContext(),"month", months, months_income, months_expense);
         grid = (GridView) view.findViewById(R.id.gridViewBalanceDaily);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {

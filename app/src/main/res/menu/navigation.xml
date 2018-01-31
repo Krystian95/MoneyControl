@@ -12,8 +12,8 @@
         android:title="@string/navigation_balance" />
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="@string/title_notifications" />
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/ic_icons8_mappa_con_segnaposto_filled"
+        android:title="@string/navigation_map" />
 
 </menu>

@@ -121,8 +121,6 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static void setupDefaultCategories(AppDatabase db) {
 
-        List<Category> income_categories;
-
         String[] income_category_name = {
                 "Stipendio",
                 "Regali",

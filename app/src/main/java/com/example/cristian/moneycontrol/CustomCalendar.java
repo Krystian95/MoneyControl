@@ -14,12 +14,14 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Created by Cristian on 04/01/2018.
- */
-
 public class CustomCalendar {
 
+    /*
+    Returns a <Map> object that contains the below keys:
+    - day_number (es. "13")
+    - day_letter (es. "Sabato)
+    - month_year (es. "Gennaio 2018)
+     */
     public Map getCurrentDateTime() {
 
         DateFormat dateFormatDayNumber = new SimpleDateFormat("d");
@@ -40,18 +42,27 @@ public class CustomCalendar {
         return date;
     }
 
+    /*
+    Returns the current year in the format YYYY (es. "2018")
+     */
     public String getCurrentYear() {
         DateFormat dateFormat = new SimpleDateFormat("YYYY");
         Date todayDate = new Date();
         return dateFormat.format(todayDate);
     }
 
+    /*
+   Returns the current day in the format DD (es. "25")
+    */
     public String getCurrentDay() {
         DateFormat dateFormat = new SimpleDateFormat("DD");
         Date todayDate = new Date();
         return dateFormat.format(todayDate);
     }
 
+    /*
+   Returns the current month in the format MM (es. "11")
+    */
     public String getCurrentMonth() {
         DateFormat dateFormat = new SimpleDateFormat("MM");
         Date todayDate = new Date();
@@ -72,13 +83,6 @@ public class CustomCalendar {
     public String convertToLocalFormat(String date) {
         String[] splitted = date.split("-");
         return splitted[2] + "/" + splitted[1] + "/" + splitted[0];
-    }
-
-    private String getDate(long time) {
-        Calendar cal = Calendar.getInstance(Locale.ITALY);
-        cal.setTimeInMillis(time);
-        String date = android.text.format.DateFormat.format("dd-MM-yyyy HH:mm", cal).toString();
-        return date;
     }
 
     /*
@@ -140,6 +144,9 @@ public class CustomCalendar {
         return false;
     }
 
+    /*
+    Return the actual date formatted by "yyyy-MM-dd HH:mm:ss" (es. "2018-01-12 18:35:00")
+     */
     public String getActualDateTimeFormatted() {
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -148,21 +155,33 @@ public class CustomCalendar {
         return format.format(todayDate);
     }
 
+    /*
+    Extracts the year from a date formatted by "dd/MM/YYYY"
+     */
     public String getYearFromDate(String date) {
         String[] splitted = date.split("/");
         return splitted[2];
     }
 
+    /*
+    Extracts the month from a date formatted by "dd/MM/YYYY"
+     */
     public int getMonthFromDate(String date) {
         String[] splitted = date.split("/");
         return Integer.parseInt(splitted[1]);
     }
 
+    /*
+    Extracts the day from a date formatted by "dd/MM/YYYY"
+     */
     public int getDayFromDate(String date) {
         String[] splitted = date.split("/");
         return Integer.parseInt(splitted[0]);
     }
 
+    /*
+    Returns the month name by its number (1-12)
+     */
     public String getMonthByNumber(int number) {
 
         switch (number) {
@@ -195,6 +214,9 @@ public class CustomCalendar {
         return "";
     }
 
+    /*
+    Returns the numbers of days in a specific month
+     */
     public int getMonthLimit(String month) {
 
         if (month.equals("11") || month.equals("04") || month.equals("06") || month.equals("09")) {

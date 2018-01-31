@@ -19,9 +19,6 @@ public interface EntryDao {
     @Query("SELECT * FROM entry WHERE recurrenceRule<>'null' ORDER BY dateTime")
     public Entry[] getAllWithRrule();
 
-    @Query("DELETE FROM entry")
-    public void deleteAll();
-
     @Query("DELETE FROM entry WHERE idEntry=:entry_id")
     public void deleteEntryById(String entry_id);
 

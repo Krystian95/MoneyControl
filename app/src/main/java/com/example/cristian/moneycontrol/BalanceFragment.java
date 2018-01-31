@@ -55,12 +55,6 @@ public class BalanceFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_balance, container, false);
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

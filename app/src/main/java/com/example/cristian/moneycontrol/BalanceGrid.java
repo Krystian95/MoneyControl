@@ -9,27 +9,33 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * Created by Cristian on 15/01/2018.
- */
-
 public class BalanceGrid extends BaseAdapter {
 
     private Context mContext;
-    List<String> years;
-    List<Float> years_income;
-    List<Float> years_expense;
+    private List<String> fields;
+    private List<Float> incomes;
+    private List<Float> expenses;
+    private String type;
+    private String current_day;
+    private String current_month;
+    private String current_year;
 
-    public BalanceGrid(Context c, List<String> years, List<Float> years_income, List<Float> years_expense) {
+    public BalanceGrid(Context c, String type, List<String> fields, List<Float> incomes, List<Float> expenses) {
         mContext = c;
-        this.years = years;
-        this.years_income = years_income;
-        this.years_expense = years_expense;
+        this.fields = fields;
+        this.incomes = incomes;
+        this.expenses = expenses;
+        this.type = type;
+
+        CustomCalendar calendar = new CustomCalendar();
+        this.current_day = calendar.getCurrentDay();
+        this.current_month = calendar.getCurrentMonth();
+        this.current_year = calendar.getCurrentYear();
     }
 
     @Override
     public int getCount() {
-        return years.size();
+        return fields.size();
     }
 
     @Override
@@ -52,14 +58,24 @@ public class BalanceGrid extends BaseAdapter {
         grid = new View(mContext);
         grid = inflater.inflate(R.layout.grid_element_balance, null);
 
-        TextView year = (TextView) grid.findViewById(R.id.label_text);
-        year.setText(this.years.get(position));
+        TextView field = (TextView) grid.findViewById(R.id.label_text);
+        field.setText(this.fields.get(position));
 
-        TextView year_income = (TextView) grid.findViewById(R.id.total_income);
-        year_income.setText(Utils.formatNumber(this.years_income.get(position)));
+        String printed = this.fields.get(position);
 
-        TextView year_expense = (TextView) grid.findViewById(R.id.total_expense);
-        year_expense.setText(Utils.formatNumber(this.years_expense.get(position)));
+        switch (this.type){
+            case "day":
+                if(printed.equals(this.current_day)){
+                    field.setBackgroundColor(mContext.getResources().getColor(R.color.orange));
+                }
+                break;
+        }
+
+        TextView income = (TextView) grid.findViewById(R.id.total_income);
+        income.setText(Utils.formatNumber(this.incomes.get(position)));
+
+        TextView expense = (TextView) grid.findViewById(R.id.total_expense);
+        expense.setText(Utils.formatNumber(this.expenses.get(position)));
 
         return grid;
     }

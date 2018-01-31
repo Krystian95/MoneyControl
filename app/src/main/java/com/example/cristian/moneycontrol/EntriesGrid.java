@@ -14,10 +14,6 @@ import com.example.cristian.moneycontrol.database.Entry;
 
 import java.util.List;
 
-/**
- * Created by Cristian on 15/01/2018.
- */
-
 public class EntriesGrid extends BaseAdapter {
 
     private Context mContext;
@@ -65,10 +61,10 @@ public class EntriesGrid extends BaseAdapter {
         ImageView imageView = (ImageView) grid.findViewById(R.id.category_image);
         imageView.setImageResource(category.getIcon());
 
-        if(category.getType().equals("expense")){
+        if (category.getType().equals("expense")) {
             entry_amount.setTextColor(mContext.getResources().getColor(R.color.red));
             eur.setTextColor(mContext.getResources().getColor(R.color.red));
-        }else{
+        } else {
             entry_amount.setTextColor(mContext.getResources().getColor(R.color.green));
             eur.setTextColor(mContext.getResources().getColor(R.color.green));
         }

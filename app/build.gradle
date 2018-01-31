@@ -10,6 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        resValue "string", "google_maps_key", (project.findProperty("AIzaSyBzhzPaedSfXuRk3WAq7UGWbqL_X5swVnA") ?: "")
     }
     buildTypes {
         release {
@@ -27,15 +28,16 @@ ext {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:support-vector-drawable:26.1.0'
-    implementation 'com.android.support:support-v4:26.1.0'
+    //noinspection GradleCompatible
+    implementation "com.android.support:appcompat-v7:${supportLibVersion}"
+    implementation "com.android.support.constraint:constraint-layout:1.0.2"
+    implementation "com.android.support:design:${supportLibVersion}"
+    implementation "com.android.support:support-vector-drawable:${supportLibVersion}"
+    implementation "com.android.support:support-v4:${supportLibVersion}"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile 'com.android.support:design:26.1.0'
+    compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
@@ -46,7 +48,7 @@ dependencies {
     // AnimatedVectorDrawableCompat
     compile "com.android.support:transition:${supportLibVersion}"
     compile 'com.seatgeek:placesautocomplete:0.3-SNAPSHOT'
-    compile 'com.google.android.gms:play-services:11.0.1'
+    compile 'com.google.android.gms:play-services:11.8.0'
     compile 'com.code-troopers.betterpickers:library:3.1.0'
     // https://mvnrepository.com/artifact/org.dmfs/lib-recur
     compile 'org.dmfs:rfc5545-datetime:0.2.4'
@@ -54,18 +56,21 @@ dependencies {
 
     // database
     // ViewModel and LiveData
-    implementation "android.arch.lifecycle:extensions:1.0.0"
-    annotationProcessor "android.arch.lifecycle:compiler:1.0.0"
+    implementation "android.arch.lifecycle:extensions:1.1.0"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.0"
     // Room
     implementation "android.arch.persistence.room:runtime:1.0.0"
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
     // Paging
     implementation "android.arch.paging:runtime:1.0.0-alpha4-1"
     // Test helpers for LiveData
-    testImplementation "android.arch.core:core-testing:1.0.0"
+    testImplementation "android.arch.core:core-testing:1.1.0"
     // Test helpers for Room
     testImplementation "android.arch.persistence.room:testing:1.0.0"
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
+    // Google Maps
+    compile 'com.google.android.gms:play-services-maps:11.8.0'
+    compile 'com.google.maps.android:android-maps-utils:0.5'
 
 }

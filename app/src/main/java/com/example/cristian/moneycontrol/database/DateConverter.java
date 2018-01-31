@@ -12,7 +12,6 @@ class DateConverter {
 
     @TypeConverter
     public static Date toDate(Long timestamp) {
-        //return timestamp == null ? null : new Date(timestamp);
         return timestamp == null ? null : getDate(timestamp);
     }
 

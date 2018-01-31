@@ -9,6 +9,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_today">Oggi</string>
     <string name="navigation_balance">Bilancio</string>
+    <string name="navigation_map">Mappa</string>
     <string name="example_day_number">13</string>
     <string name="example_day_letter">martedì</string>
     <string name="example_month_year">Gennaio 2018</string>
@@ -71,4 +72,5 @@
     <string name="permission_location_required">L\'applicazione ha bisogno dell\'accesso alla posizione.</string>
     <string name="permissions_location_denied">Hai negato l\'accesso alla posizione.</string>
     <string name="gps_disabled">Il tuo GPS sembra essere disattivato, vuoi attivarlo?</string>
+    <string name="map_tips">Tieni premuto un marker per aggiornare l\'indirizzo</string>
 </resources>

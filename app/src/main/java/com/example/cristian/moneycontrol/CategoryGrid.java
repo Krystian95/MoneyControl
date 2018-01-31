@@ -8,10 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * Created by Cristian on 15/01/2018.
- */
-
 public class CategoryGrid extends BaseAdapter {
 
 

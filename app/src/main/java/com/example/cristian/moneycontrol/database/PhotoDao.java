@@ -27,9 +27,6 @@ public interface PhotoDao {
     @Query("UPDATE photo SET idEntry=:id_entry WHERE absolute_path=:absolute_path")
     public void updateIdEntryByAbsolutePath(String absolute_path, String id_entry);
 
-    @Query("SELECT * FROM photo")
-    public Photo[] getAll();
-
     @Delete
     void delete(Photo photo);
 }

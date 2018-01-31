@@ -65,18 +65,27 @@ public class SingleDayActivity extends AppCompatActivity {
         Entry[] entries = AppDatabase.getEntriesByDate(db, date);
 
         final List<String> day_entries_id = new ArrayList<>();
-        float total_expense = 0;
-        float total_income = 0;
+        float total_expense_value = 0;
+        float total_income_value = 0;
 
         for (int i = 0; i < entries.length; i++) {
             day_entries_id.add(String.valueOf(entries[i].getIdEntry()));
             Category category = AppDatabase.getCategoryById(db, String.valueOf(entries[i].getIdCategory()));
             if (category.getType().equals("expense")) {
-                total_expense += entries[i].getAmount();
+                total_expense_value += entries[i].getAmount();
             } else {
-                total_income += entries[i].getAmount();
+                total_income_value += entries[i].getAmount();
             }
         }
+
+        float total_saving_value = total_income_value - total_expense_value;
+
+        TextView total_income = (TextView) findViewById(R.id.total_income);
+        total_income.setText(Utils.formatNumber(total_income_value));
+        TextView total_expense = (TextView) findViewById(R.id.total_expense);
+        total_expense.setText(Utils.formatNumber(total_expense_value));
+        TextView total_saving = (TextView) findViewById(R.id.total_saving);
+        total_saving.setText(Utils.formatNumber(total_saving_value));
 
         gridTodayEntries = (GridView) findViewById(R.id.gridViewBalanceDaily);
 

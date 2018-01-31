@@ -60,6 +60,13 @@
         </provider>
 
         <activity android:name=".SingleDayActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBzhzPaedSfXuRk3WAq7UGWbqL_X5swVnA" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

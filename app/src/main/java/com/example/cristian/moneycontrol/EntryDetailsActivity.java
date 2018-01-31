@@ -172,19 +172,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
         layout_main = findViewById(R.id.layout_add_new_entry_details);
 
-        delete_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                AppDatabase.deleteEntryById(db, idEntry);
-
-                Toast.makeText(v.getContext(), getString(R.string.entry_deleted), Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(EntryDetailsActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
         /* Keyboard show for amount input number */
 
         if (isNewEntry) {
@@ -338,7 +325,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             }
         });
 
-        /* TextView descrizione stato new entry (Pagata, Prevista, Scaduta */
+        /* Entry state (Pagata, Prevista, Scaduta */
 
         checkbox_paid_label.setOnTouchListener(new View.OnTouchListener() {
 
@@ -409,7 +396,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             }
         });
 
-        /* photo */
+        /* Photo(s) */
 
         setupExistingPhotos();
 
@@ -420,7 +407,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             }
         });
 
-        /* repeat */
+        /* Repeat event */
 
         switch_repeat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -448,7 +435,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             }
         });
 
-        /* save */
+        /* Save button */
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -500,29 +487,50 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
                 startActivity(intent);
             }
         });
+
+        /* Delete button */
+
+        delete_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AppDatabase.deleteEntryById(db, idEntry);
+
+                Toast.makeText(v.getContext(), getString(R.string.entry_deleted), Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(EntryDetailsActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
+    /*
+    Start the action to get the user's current location using GPS
+     */
     private void startLocationAction() {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            getLocation();
+            setLocation();
         } else {
             requestLocationPermission();
         }
 
     }
 
-    private void getLocation() {
+    /*
+    Sets the location into the address textedit
+     */
+    private void setLocation() {
 
-        GPSTracker gpsTracker = new GPSTracker(EntryDetailsActivity.this);
+        GPSLocator gpsLocator = new GPSLocator(EntryDetailsActivity.this);
 
-        if (gpsTracker.canGetLocation()) {
-            double lat = gpsTracker.latitude;
-            double lon = gpsTracker.longitude;
+        if (gpsLocator.canGetLocation()) {
+            double lat = gpsLocator.latitude;
+            double lon = gpsLocator.longitude;
 
             if (lat != 0 && lon != 0) {
-                String addressLine = gpsTracker.getAddressLine(this);
+                String addressLine = gpsLocator.getAddressLine(this);
                 address.setText(addressLine);
             }
         } else {
@@ -530,6 +538,9 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
         }
     }
 
+    /*
+    Displays an alert if the GPS is disabled
+     */
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.gps_disabled)
@@ -635,7 +646,7 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
             }
         } else if (requestCode == PERMISSION_REQUEST_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLocation();
+                setLocation();
             } else {
                 // Permission request was denied.
                 Snackbar.make(layout_main, R.string.permissions_location_denied,

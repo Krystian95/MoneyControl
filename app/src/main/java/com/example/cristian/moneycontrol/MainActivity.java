@@ -17,7 +17,8 @@ public class MainActivity extends AppCompatActivity implements
         BalanceDetailsFragment.OnFragmentInteractionListener,
         YearlyBalanceFragment.OnFragmentInteractionListener,
         MonthlyBalanceFragment.OnFragmentInteractionListener,
-        DailyBalanceFragment.OnFragmentInteractionListener {
+        DailyBalanceFragment.OnFragmentInteractionListener,
+        MapFragment.OnFragmentInteractionListener {
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -49,7 +50,14 @@ public class MainActivity extends AppCompatActivity implements
                             .commit();
 
                     return true;
-                case R.id.navigation_notifications:
+                case R.id.navigation_map:
+
+                    fragment = new MapFragment();
+                    transaction
+                            .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
 
                     return true;
             }

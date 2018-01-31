@@ -117,7 +117,7 @@ public class DailyBalanceFragment extends Fragment {
             }
         }
 
-        BalanceGrid adapter = new BalanceGrid(view.getContext(), days, days_income, days_expense);
+        BalanceGrid adapter = new BalanceGrid(view.getContext(),"day", days, days_income, days_expense);
         grid = (GridView) view.findViewById(R.id.gridViewBalanceDaily);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -194,12 +194,6 @@ public class DailyBalanceFragment extends Fragment {
             days.add(String.valueOf(i));
             this.days_income.add((float) 0);
             this.days_expense.add((float) 0);
-        }
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
         }
     }
 

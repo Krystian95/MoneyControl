@@ -26,9 +26,6 @@ import java.util.List;
 
 public class YearlyBalanceFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     GridView grid;
     List<String> years;
     private View view;
@@ -92,7 +89,7 @@ public class YearlyBalanceFragment extends Fragment {
             }
         }
 
-        BalanceGrid adapter = new BalanceGrid(view.getContext(), years, years_income, years_expense);
+        BalanceGrid adapter = new BalanceGrid(view.getContext(), "year", years, years_income, years_expense);
         grid = (GridView) view.findViewById(R.id.gridViewBalanceDaily);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
