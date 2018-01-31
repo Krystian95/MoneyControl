@@ -16,7 +16,7 @@ import com.example.cristian.moneycontrol.database.Category;
 
 public class AddNewExpenseFragment extends Fragment {
 
-    GridView grid;
+    private GridView grid;
 
     private OnFragmentInteractionListener mListener;
 

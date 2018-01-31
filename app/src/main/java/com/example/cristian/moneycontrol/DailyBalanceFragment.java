@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DailyBalanceFragment extends Fragment {
 
@@ -34,10 +35,10 @@ public class DailyBalanceFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    GridView grid;
-    List<String> days;
-    List<Float> days_income;
-    List<Float> days_expense;
+    private GridView grid;
+    private List<String> days;
+    private List<Float> days_income;
+    private List<Float> days_expense;
 
     public DailyBalanceFragment() {
         // Required empty public constructor
@@ -89,6 +90,10 @@ public class DailyBalanceFragment extends Fragment {
 
         setupArrays();
 
+        Utils utils = new Utils();
+        Map map_categories = utils.buildCategoriesMap(getContext());
+        Category category;
+
         for (int i = 0; i < entries.length; i++) {
 
             String year = calendar.getYearFromDate(entries[i].getDate());
@@ -99,7 +104,7 @@ public class DailyBalanceFragment extends Fragment {
                 int day = calendar.getDayFromDate(entries[i].getDate());
                 day--;
 
-                Category category = AppDatabase.getCategoryById(db, String.valueOf(entries[i].getIdCategory()));
+                category = (Category) map_categories.get(entries[i].getIdCategory());
 
                 if (category.getType().equals("expense")) {
                     float expense = days_expense.get(day);

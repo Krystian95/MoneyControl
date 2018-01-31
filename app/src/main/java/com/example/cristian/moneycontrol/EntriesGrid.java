@@ -17,7 +17,7 @@ import java.util.List;
 public class EntriesGrid extends BaseAdapter {
 
     private Context mContext;
-    List<String> entries_id;
+    private List<String> entries_id;
     private AppDatabase db;
 
     public EntriesGrid(Context c, List<String> entries_id) {

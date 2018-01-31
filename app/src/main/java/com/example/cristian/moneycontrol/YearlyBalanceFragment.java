@@ -23,11 +23,12 @@ import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class YearlyBalanceFragment extends Fragment {
 
-    GridView grid;
-    List<String> years;
+    private GridView grid;
+    private List<String> years;
     private View view;
 
     private OnFragmentInteractionListener mListener;
@@ -67,6 +68,10 @@ public class YearlyBalanceFragment extends Fragment {
         List<Float> years_income = new ArrayList<>();
         List<Float> years_expense = new ArrayList<>();
 
+        Utils utils = new Utils();
+        Map map_categories = utils.buildCategoriesMap(getContext());
+        Category category;
+
         for (int i = 0; i < entries.length; i++) {
             String year = calendar.getYearFromDate(entries[i].getDate());
             if (!years.contains(year)) {
@@ -76,7 +81,7 @@ public class YearlyBalanceFragment extends Fragment {
             }
 
             int index = years.indexOf(year);
-            Category category = AppDatabase.getCategoryById(db, String.valueOf(entries[i].getIdCategory()));
+            category = (Category) map_categories.get(entries[i].getIdCategory());
 
             if (category.getType().equals("expense")) {
                 float expense = years_expense.get(index);

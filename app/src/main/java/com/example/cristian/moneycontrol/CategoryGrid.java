@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 public class CategoryGrid extends BaseAdapter {
 
-
     private Context mContext;
     private final String[] web;
     private final int[] Imageid;

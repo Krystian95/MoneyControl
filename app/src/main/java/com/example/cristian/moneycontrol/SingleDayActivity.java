@@ -19,7 +19,7 @@ import java.util.List;
 
 public class SingleDayActivity extends AppCompatActivity {
 
-    GridView gridTodayEntries;
+    private GridView gridTodayEntries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

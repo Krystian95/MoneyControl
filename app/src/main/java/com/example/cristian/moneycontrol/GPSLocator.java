@@ -27,14 +27,14 @@ public class GPSLocator extends Service implements LocationListener {
     private final Context mContext;
 
     //flag for GPS Status
-    boolean isGPSEnabled = false;
+    private boolean isGPSEnabled = false;
 
     //flag for network status
-    boolean isNetworkEnabled = false;
+    private boolean isNetworkEnabled = false;
 
-    boolean canGetLocation = false;
+    private boolean canGetLocation = false;
 
-    Location location;
+    private Location location;
     double latitude;
     double longitude;
 

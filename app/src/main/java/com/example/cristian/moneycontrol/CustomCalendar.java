@@ -86,7 +86,7 @@ public class CustomCalendar {
     /*
     Return date time in milliseconds
      */
-    private long dateTimeToMillis(String date, String time) {
+    public long dateTimeToMillis(String date, String time) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         Date strDate = null;

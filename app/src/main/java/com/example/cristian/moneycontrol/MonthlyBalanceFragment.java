@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MonthlyBalanceFragment extends Fragment {
 
@@ -30,10 +31,10 @@ public class MonthlyBalanceFragment extends Fragment {
 
     private String currentYear;
 
-    GridView grid;
-    List<String> months;
-    List<Float> months_income;
-    List<Float> months_expense;
+    private GridView grid;
+    private List<String> months;
+    private List<Float> months_income;
+    private List<Float> months_expense;
 
     private OnFragmentInteractionListener mListener;
 
@@ -106,6 +107,10 @@ public class MonthlyBalanceFragment extends Fragment {
 
         setupArrays();
 
+        Utils utils = new Utils();
+        Map map_categories = utils.buildCategoriesMap(getContext());
+        Category category;
+
         for (int i = 0; i < entries.length; i++) {
 
             String year = calendar.getYearFromDate(entries[i].getDate());
@@ -113,7 +118,8 @@ public class MonthlyBalanceFragment extends Fragment {
             if (year.equals(this.currentYear)) {
                 int month = calendar.getMonthFromDate(entries[i].getDate());
                 month--;
-                Category category = AppDatabase.getCategoryById(db, String.valueOf(entries[i].getIdCategory()));
+
+                category = (Category) map_categories.get(entries[i].getIdCategory());
 
                 if (category.getType().equals("expense")) {
                     float expense = months_expense.get(month);

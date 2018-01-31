@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class FragmentPagerAddNewEntryAdapter extends FragmentPagerAdapter {
 
-    final int PAGE_COUNT = 2;
+    private final int PAGE_COUNT = 2;
     private String tabTitles[] = new String[]{
             "Entrata",
             "Spesa"
