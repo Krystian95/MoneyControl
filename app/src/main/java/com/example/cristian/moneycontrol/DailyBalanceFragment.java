@@ -21,12 +21,8 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
-import java.util.Locale;
 
 public class DailyBalanceFragment extends Fragment {
 
@@ -117,7 +113,7 @@ public class DailyBalanceFragment extends Fragment {
             }
         }
 
-        BalanceGrid adapter = new BalanceGrid(view.getContext(),"day", days, days_income, days_expense);
+        BalanceGrid adapter = new BalanceGrid(view.getContext(), "day", days, days_income, days_expense);
         grid = (GridView) view.findViewById(R.id.gridViewBalanceDaily);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {

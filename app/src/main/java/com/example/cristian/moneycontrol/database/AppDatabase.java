@@ -9,7 +9,6 @@ import com.example.cristian.moneycontrol.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 @Database(entities = {Entry.class, Category.class, Photo.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {

@@ -47,7 +47,7 @@ public class Category {
         this.type = type;
     }
 
-    public String toString(){
+    public String toString() {
         return "Category{" +
                 "\n\t\t\t idCategory: " + idCategory +
                 "\n\t\t\t name: " + name +

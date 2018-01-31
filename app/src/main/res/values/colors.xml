@@ -11,5 +11,6 @@
     <color name="foreground_material_light">#ffffff</color>
     <color name="light_gray">#CCC</color>
     <color name="orange">@android:color/holo_orange_dark</color>
+    <color name="yellow">#FFC109</color>
 
 </resources>

@@ -27,6 +27,7 @@ public class AddNewExpenseFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment AddNewExpenseFragment.
      */
 

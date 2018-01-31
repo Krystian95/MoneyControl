@@ -19,9 +19,9 @@ public class TodayFragment extends Fragment implements TodayDetailsFragment.OnFr
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment TodayFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static TodayFragment newInstance(String param1, String param2) {
         TodayFragment fragment = new TodayFragment();
         return fragment;

@@ -854,8 +854,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements Recurrenc
 
         final String absolute_path = photo.getAbsolutePath();
 
-        //TODO add to database
-
         Bitmap myBitmap = BitmapFactory.decodeFile(absolute_path);
 
         FrameLayout frameLayout = new FrameLayout(this);

@@ -27,6 +27,7 @@ public class AddNewIncomeFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment AddNewIncomeFragment.
      */
     public static AddNewIncomeFragment newInstance(String param1, String param2) {
