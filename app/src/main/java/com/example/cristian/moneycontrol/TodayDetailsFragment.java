@@ -20,6 +20,7 @@ import com.example.cristian.moneycontrol.database.Category;
 import com.example.cristian.moneycontrol.database.Entry;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -92,15 +93,22 @@ public class TodayDetailsFragment extends Fragment {
 
         calendar.getActualDateTimeFormatted();
 
-        Entry[] entries = AppDatabase.getAllWithRrule(db);
+        Entry[] entries = AppDatabase.getAllEntries(db);
 
         final List<String> future_entries_id = new ArrayList<>();
+        boolean eventHasFutureOccurrenceas;
 
         for (int i = 0; i < entries.length; i++) {
 
-            boolean eventHasFutureOccurrenceas = calendar.eventHasFutureOccurrences(entries[i].getRecurrenceRule(), entries[i].getDate(), entries[i].getTime());
+            eventHasFutureOccurrenceas = false;
 
-            if (eventHasFutureOccurrenceas) {
+            if (!entries[i].getRecurrenceRule().equals(null)) {
+                eventHasFutureOccurrenceas = calendar.eventHasFutureOccurrences(entries[i].getRecurrenceRule(), entries[i].getDate(), entries[i].getTime());
+            }
+
+            long date_event_millis = calendar.dateTimeToMillis(entries[i].getDate(), entries[i].getTime());
+
+            if (eventHasFutureOccurrenceas || calendar.compareDate(new Date(), new Date(date_event_millis))) {
                 future_entries_id.add(String.valueOf(entries[i].getIdEntry()));
             }
         }

@@ -87,7 +87,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static Entry[] getTodayEntries(final AppDatabase db) {
 
-        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD");
+        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd");
         Date myDate = new Date();
         String today_string = format.format(myDate);
         String from_date = today_string + " 00:00:00";

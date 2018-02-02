@@ -1,12 +1,8 @@
 <resources>
     <string name="app_name">MoneyControl</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_home" translatable="false">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications" translatable="false">Notifications</string>
     <string name="app_name_tiny">Money Control</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_today">Oggi</string>
     <string name="navigation_balance">Bilancio</string>
     <string name="navigation_map">Mappa</string>
@@ -14,9 +10,7 @@
     <string name="example_day_letter">martedì</string>
     <string name="example_month_year">Gennaio 2018</string>
     <string name="addnewexpense">AddNewExpense</string>
-    <string name="title_activity_main2">Main2Activity</string>
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_add_new_expense">AddNewExpenseActivity</string>
     <string name="undo">Annulla</string>
     <string name="paid">Pagata</string>
@@ -31,7 +25,6 @@
     <string name="expense_new_title">Nuova</string>
     <string name="EntryDetailsActivity">EntryDetailsActivity</string>
     <string name="take_new_photo">Foto</string>
-    <string name="delete">Elimina</string>
     <string name="full_image_preview">Anteprima Immagine Full Screen</string>
     <string name="alert_delete_photo">Sei sicuro di voler eliminare questa foto?</string>
     <string name="No">No</string>
@@ -68,7 +61,6 @@
     <string name="totale">Totale</string>
     <string name="example_month">Gennaio</string>
     <string name="ricerca_giorno">Ricerca Giorno</string>
-    <string name="settings">settings</string>
     <string name="permission_location_required">L\'applicazione ha bisogno dell\'accesso alla posizione.</string>
     <string name="permissions_location_denied">Hai negato l\'accesso alla posizione.</string>
     <string name="gps_disabled">Il tuo GPS sembra essere disattivato, vuoi attivarlo?</string>

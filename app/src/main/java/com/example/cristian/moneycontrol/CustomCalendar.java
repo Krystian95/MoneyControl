@@ -53,7 +53,7 @@ public class CustomCalendar {
    Returns the current day in the format DD (es. "25")
     */
     public String getCurrentDay() {
-        DateFormat dateFormat = new SimpleDateFormat("DD");
+        DateFormat dateFormat = new SimpleDateFormat("dd");
         Date todayDate = new Date();
         return dateFormat.format(todayDate);
     }
@@ -119,24 +119,25 @@ public class CustomCalendar {
         RecurrenceRule rule = null;
         try {
             rule = new RecurrenceRule(rRule);
+
+            long startMillis = dateTimeToMillis(start_date, start_time);
+            DateTime start = new DateTime(startMillis);
+
+            RecurrenceRuleIterator it = rule.iterator(start);
+
+            int maxInstances = 1000; // limit instances for rules that recur forever
+
+            while (it.hasNext() && (!rule.isInfinite() || maxInstances-- > 0)) {
+                DateTime nextInstance = it.nextDateTime();
+                //Log.e("Next Event Occurrence", String.vaueOf(getDate(nextInstance.getTimestamp())));
+                if (compareDate(new Date(), new Date(nextInstance.getTimestamp()))) {
+                    //Log.e("COMPARE RESULT", new Date().toString() + " < " + new Date(nextInstance.getTimestamp()).toString());
+                    return true;
+                }
+            }
         } catch (InvalidRecurrenceRuleException e) {
             e.printStackTrace();
-        }
-
-        long startMillis = dateTimeToMillis(start_date, start_time);
-        DateTime start = new DateTime(startMillis);
-
-        RecurrenceRuleIterator it = rule.iterator(start);
-
-        int maxInstances = 1000; // limit instances for rules that recur forever
-
-        while (it.hasNext() && (!rule.isInfinite() || maxInstances-- > 0)) {
-            DateTime nextInstance = it.nextDateTime();
-            //Log.e("Next Event Occurrence", String.vaueOf(getDate(nextInstance.getTimestamp())));
-            if (compareDate(new Date(), new Date(nextInstance.getTimestamp()))) {
-                //Log.e("COMPARE RESULT", new Date().toString() + " < " + new Date(nextInstance.getTimestamp()).toString());
-                return true;
-            }
+            return false;
         }
 
         return false;

@@ -1,11 +1,30 @@
-<vector android:height="24dp" android:viewportHeight="48.0"
-    android:viewportWidth="48.0" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#C5CAE9" android:pathData="M41,38C41,43 37,43 37,43L10,43L10,5L41,5C41,5 41,33 41,38Z"/>
-    <path android:fillColor="#7986CB" android:pathData="M14,12L17,12L17,15L14,15Z"/>
-    <path android:fillColor="#7986CB" android:pathData="M20,12L37,12L37,15L20,15Z"/>
-    <path android:fillColor="#7986CB" android:pathData="M14,18L17,18L17,21L14,21Z"/>
-    <path android:fillColor="#7986CB" android:pathData="M20,18L37,18L37,21L20,21Z"/>
-    <path android:fillColor="#7986CB" android:pathData="M14,24L17,24L17,27L14,27Z"/>
-    <path android:fillColor="#7986CB" android:pathData="M20,24L37,24L37,27L20,27Z"/>
-    <path android:fillColor="#3F51B5" android:pathData="M33,38C33,37.29 33,34.21 33,33L7,33C7,34.21 7,37.29 7,38C7,40.76 8.24,43 11,43L37,43C34.24,43 33,40.76 33,38Z"/>
+<vector android:height="24dp"
+    android:viewportHeight="48.0"
+    android:viewportWidth="48.0"
+    android:width="24dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <path
+        android:fillColor="#C5CAE9"
+        android:pathData="M41,38C41,43 37,43 37,43L10,43L10,5L41,5C41,5 41,33 41,38Z" />
+    <path
+        android:fillColor="#7986CB"
+        android:pathData="M14,12L17,12L17,15L14,15Z" />
+    <path
+        android:fillColor="#7986CB"
+        android:pathData="M20,12L37,12L37,15L20,15Z" />
+    <path
+        android:fillColor="#7986CB"
+        android:pathData="M14,18L17,18L17,21L14,21Z" />
+    <path
+        android:fillColor="#7986CB"
+        android:pathData="M20,18L37,18L37,21L20,21Z" />
+    <path
+        android:fillColor="#7986CB"
+        android:pathData="M14,24L17,24L17,27L14,27Z" />
+    <path
+        android:fillColor="#7986CB"
+        android:pathData="M20,24L37,24L37,27L20,27Z" />
+    <path
+        android:fillColor="#3F51B5"
+        android:pathData="M33,38C33,37.29 33,34.21 33,33L7,33C7,34.21 7,37.29 7,38C7,40.76 8.24,43 11,43L37,43C34.24,43 33,40.76 33,38Z" />
 </vector>

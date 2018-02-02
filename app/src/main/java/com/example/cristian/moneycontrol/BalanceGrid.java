@@ -60,21 +60,27 @@ public class BalanceGrid extends BaseAdapter {
         grid = inflater.inflate(R.layout.grid_element_balance, null);
 
         TextView field = (TextView) grid.findViewById(R.id.label_text);
-        field.setText(this.fields.get(position));
 
         String printed = this.fields.get(position);
+        field.setText(printed);
 
         switch (this.type) {
             case "day":
+                if (Integer.valueOf(printed) < 10) {
+                    printed = "0" + printed;
+                }
+
                 if (printed.equals(this.current_day)) {
                     field.setBackgroundColor(mContext.getResources().getColor(R.color.orange));
                 }
                 break;
+
             case "month":
                 if (printed.equals(calendar.getMonthAbbreviationByNumber(this.current_month))) {
                     field.setBackgroundColor(mContext.getResources().getColor(R.color.orange));
                 }
                 break;
+
             case "year":
                 if (printed.equals(this.current_year)) {
                     field.setBackgroundColor(mContext.getResources().getColor(R.color.orange));
